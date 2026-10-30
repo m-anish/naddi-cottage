@@ -164,6 +164,33 @@ roofed. `dome.py` models the roof as the five flat `cap` facets with 80 mm PUF p
 and treats the eaves as nothing — fine for interior renders, but the real frame has a
 projecting roof, and the longer rafters over the two extensions are what carry it.
 
+## The whole dome stands 1'-3" off the ground
+
+Anish: the structure is held **1.25 ft above ground**, on ground-screw anchors at
+every vertex plus **one in the dead centre of the pentagon base** — which is the same
+axis the loft's central hanger drops down. So the centre of the building is anchored
+top and bottom.
+
+The export's own z = 0 (the lower-ring datum, and `dome.py`'s floor origin) therefore
+sits **1.25 ft above ground**. Everything below is a measured height restated against
+ground level, which is what the washroom question turns on:
+
+| | Above floor datum | Above ground |
+| --- | --- | --- |
+| Ground | −1.25 ft | 0 |
+| Washroom extension, floor steel | −0.13 to +0.46 ft | 1.12–1.71 ft |
+| Toilet floor as designed (1 ft over the terrace) | ~−0.25 ft | ~1.0 ft |
+| Washroom extension, mid-height rail | 3.49 ft | 4.74 ft |
+| Washroom rafter, outer end (centreline) | 7.36 ft | 8.61 ft |
+| Washroom outer corner hub | 6.59–7.39 ft | 7.84–8.64 ft |
+| Upper ring (lower of the pair) | 10.20 ft | 11.45 ft |
+| Loft datum | 8.46 ft | 9.71 ft |
+| Apex | 16.52 ft | 17.77 ft |
+
+`dome.py` should carry a `GROUND_Z = -1.25` so that drawings and renders can show the
+ground line and the floor void honestly. Note the brief's "raised metal frame ... void
+under it sealed in painted tin" is this 1'-3".
+
 ## The upper ring is doubled
 
 The upper pentagon is not five struts but **ten** — two complete rings of five, both
@@ -212,13 +239,13 @@ file** — there is no member anywhere that spans the axis to the wall at that l
 Anish confirms they exist in the design and are simply missing from the export, and
 has asked for them to be modelled.
 
-He describes them as running from three of the five hangers, on the west / south-west
-/ north-west side. By the bearings above the five hangers face **E, NNE, NW, SW and
-SSE** — there is no hanger due west, so the three intended are either
-{NNE, NW, SW} or {NW, SW, SSE}. Both are centred near west; the first is centred on
-the washroom side, which is where the brief puts the loft. **Needs one word from
-Anish to settle**, because it decides the platform's footprint and which way the
-ladder faces.
+They run from three of the five hangers. By the bearings above the five hangers face
+**E, NNE, NW, SW and SSE** — there is no hanger due west, and Anish has confirmed the
+three are the **NNE, NW and SW** ones (model angles 126°, 198°, 270°).
+
+So the platform spans a 144° sector centred on **NW — the washroom side**, which is
+where the brief puts it. The two unused hangers are the E one (over the morning-sun
+extension) and the SSE one, which keeps the loft clear of the best daylight.
 
 Either way the loft is a **three-sided suspended platform, not the straight-edged slab
 `dome.py` currently draws** (`loft()`, with `LOFT_Z = 9.0` and a cut at `LOFT_Y = 2.6`).
@@ -234,6 +261,73 @@ perimeter. That is the "raised metal frame" of the brief: a set of chords, not a
 beam. The 25.42 ft beam is longer than the dome is wide (20.4 ft), so it cantilevers
 out at both ends.
 
+## Can the toilet floor drop, for more headroom?
+
+Anish asks whether the washroom floor can sit lower than the dome's, closer to the
+ground, to win vertical space. The frame says yes — but only about **5 to 8 inches**,
+and the thing that stops it is drainage, not structure.
+
+### What headroom there is now
+
+The washroom's roof is the pair of 18 ft rafters running radially out along the 198°
+centre line, so the roof is highest on that centre line and falls away to each side.
+At the back, where the shower goes:
+
+| Where | Clear height over the toilet floor |
+| --- | --- |
+| Back wall, **on the centre line** (the shower) | **about 7'-6"**, rafters the lowest element |
+| Back **corners**, off to the sides | about 6'-10" |
+| At the dome wall line, 7'-8" further in | about 9'-5" |
+
+So the shower as placed is adequate but not generous, and the corners are tight. The
+figures are read off a tessellated export, so treat them as ±2 in.
+
+### How much the floor can come down
+
+The budget is the gap between the finished floor and the biodigester inlet:
+
+| | |
+| --- | --- |
+| Toilet floor as designed | +12 in above the upper terrace |
+| Biodigester inlet | −8 in below the upper terrace |
+| **Total available drop** | **20 in** |
+| less the drain's own depth under the floor (pan connector, bend, slab and XPS) | −10 to 12 in |
+| less fall on the run, ~10 ft at 1:40–1:60 | −2 to 3 in |
+| **Slack left** | **about 5–8 in** |
+
+So the toilet floor can come down to roughly **4–7 in above the upper terrace** and
+still drain by gravity. That buys 5–8 in of headroom — the shower goes from about
+7'-6" to about **8'-0"**. Worth having, and it costs nothing but setting out.
+
+It cannot go to terrace level or below: the biodigester inlet is only 8 in down, and
+the WC's own drain needs more than that beneath the floor. Going lower means a pump,
+which for a single off-grid house is not worth it.
+
+### Three things to watch if it drops
+
+- **The steel sill stays where it is.** The extension's bottom chord sits at
+  1.12–1.71 ft above ground and does not move, so dropping the floor leaves a steel
+  threshold 12–20 in above it. That is actually *good* for a wet room — it contains
+  water — but it becomes a deliberate step down, and the waterproofing has to turn up
+  over it.
+- **Rain.** 3,000 mm a year. A floor near surrounding ground level wants the plinth
+  standing proud, the terrace graded away from the washroom, and the finished floor
+  kept above the finished ground immediately outside the door.
+- **Frost.** Keep the 50 mm XPS under the slab and the 25 mm edge strip, and run the
+  edge strip further down the plinth now that there is less cover.
+
+### A bigger lever than the floor
+
+The roof climbs steeply going inboard — about 7½ in of height for every foot towards
+the dome. **Moving the shower 2 ft in from the back wall gains about 15 in of
+headroom**, roughly twice what dropping the floor gives, and for nothing.
+
+Layout A puts the shower at the back deliberately, to keep the wet end away from the
+door and the dry zone. But the back is the one place the roof is lowest, and the
+shower is the one fixture that needs full standing height — a WC and a basin do not.
+Worth re-testing the layout against the real roof line before settling it. Both moves
+together would give a shower with well over 8 ft of clear height.
+
 ## What to change in `code/dome.py`
 
 1. **Rotate +108°** — the two `pol(...)` lines above. Everything else follows, because
@@ -245,9 +339,11 @@ out at both ends.
    Dharamsala instead of a generic sky.
 5. Model the upper ring as a pair at 10.20 and 10.44 ft.
 6. Reset the washroom depth in `code/geom.py` to **7'-8½"**.
-7. Rebuild `loft()` as a suspended three-sided platform at `LOFT_Z = 8.46`, hung from
-   the five vertex hangers and the central drop, and add the missing radial struts.
-8. Decide what to do about the east extension at `up3` and the roof overhang.
+7. Rebuild `loft()` as a suspended platform at `LOFT_Z = 8.46`, hung from the five
+   vertex hangers and the central drop, spanning the NNE–NW–SW sector, and add the
+   missing radial struts.
+8. Add `GROUND_Z = -1.25` and draw the ground line and the floor void.
+9. Decide what to do about the east extension at `up3` and the roof overhang.
 
 ## Still to check
 
