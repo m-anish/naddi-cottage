@@ -60,11 +60,30 @@ This folder continues a claude.ai conversation (Oct 26–30, 2026). Everything d
 
 ## Open questions
 
-- Loft: is there one, where, and how big?
 - Bukhari or other stove: where? (No timber behind it.)
 - Wiring plan; final floor wood and its tone.
 - Washroom back-wall width and the real lean angle.
 - Biodigester outlet height above the lower terrace (assumed 12").
+- What the east extension is for.
+- Whether to drop the toilet floor and/or move the shower inboard (see the headroom
+  budget in `docs/onshape_frame_check.md`).
+
+Answered by the Onshape export (30 Oct 2026) — **read
+`docs/onshape_frame_check.md` before touching `code/dome.py`**:
+
+- **The loft is real**: a suspended platform at **8'-5"** (not the assumed 9'-0"),
+  hung from five hangers at the upper-ring vertices plus a 3×3" drop from the apex,
+  with radial struts to the NNE, NW and SW hangers — a 144° sector over the washroom
+  side. The radial struts are missing from the export and need modelling.
+- **`dome.py` is rotated 108° from the real frame.** Two constants fix it.
+- The frame has **two extensions**, not one: the washroom (7'-8½" deep, facing NW)
+  and a second one 6'-5¾" deep facing **east**, which sets the building's compass
+  orientation (bearing = 144° − model angle).
+- The dome stands **1'-3" above ground** on screw anchors, one per vertex plus one at
+  the pentagon centre.
+- Theoretical edge 12'-0"; actual steel strut **11'-5"**, the rest hub.
+- The upper ring is **doubled** (10.20 and 10.44 ft); the roof is rafters with eaves,
+  not bare cap edges; the floor is spanning beams, not a ring.
 
 ## The code (`code/`)
 
@@ -116,6 +135,19 @@ python3 code/scene.py p1 v1 code/out/wash.png 64 1200 800
 
 ## Next steps
 
-1. Connect the Blender MCP server (SETUP.md) and confirm you can create and delete a test cube in Anish's open Blender.
-2. When the Onshape export arrives, import it, check units and orientation, compare strut lengths and angles with `dome.py`, and rebuild the dome scene on the real frame.
+1. ~~Connect the Blender MCP server~~ — registered; waiting on the Blender install to
+   enable the add-on and run the test cube.
+2. ~~Check the Onshape export against `dome.py`~~ — done, see
+   `docs/onshape_frame_check.md`. **Still to do**: rebuild the dome scene on the real
+   frame (the +108° rotation, `GROUND_Z`, the suspended loft, the doubled upper ring,
+   the second extension, rafters with eaves).
 3. Rebuild the lining schemes on the real geometry and redo the key renders for comparison.
+4. Re-test the washroom layout against the real roof line (headroom at the back).
+
+### This machine (Intel Mac, macOS 15.7)
+
+Blender 5.x is **arm64-only on macOS**, so this Mac runs **Blender 4.5.15 LTS**, the
+last Intel build — not the 5.2.3 the scripts were written against. `bpy==4.5.15` is
+the matching wheel. Homebrew has no `uv` bottle for Intel any more (uv lives in
+`~/.local/bin`), and `cryptography` must be held to `<49` for an Intel wheel. The
+Blender MCP server runs from its own venv at `~/.local/share/blender-mcp-env`.
