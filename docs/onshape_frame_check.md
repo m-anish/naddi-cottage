@@ -251,15 +251,56 @@ Either way the loft is a **three-sided suspended platform, not the straight-edge
 `dome.py` currently draws** (`loft()`, with `LOFT_Z = 9.0` and a cut at `LOFT_Y = 2.6`).
 That function needs rebuilding on the real frame.
 
-## The floor is spanning beams, not a ring
+## The floor: three of the five edges are cantilevers that carry the extensions
 
-Only two of the five lower-ring edges exist as 11.42 ft struts (at 54° and 198° — the
-two extension faces). The other three are replaced by long level beams at floor
-level — **19.42 ft at ~8°, 25.42 ft at ~119°, 17.42 ft at ~250°** — which run right
-across the pentagon and out past it on both sides, rather than following the
-perimeter. That is the "raised metal frame" of the brief: a set of chords, not a ring
-beam. The 25.42 ft beam is longer than the dome is wide (20.4 ft), so it cantilevers
-out at both ends.
+This is the cleverest part of the frame. Naming the floor vertices by the compass
+direction they face:
+
+| Vertex | Model angle | Faces | Position (ft) |
+| --- | --- | --- | --- |
+| `L-SE` | 18° | SE | (9.71, 3.15) |
+| `L-NE` | 90° | NE | (0.00, 10.21) |
+| `L-NNW` | 162° | NNW | (−9.71, 3.15) |
+| `L-W` | 234° | **W** | (−6.00, −8.26) |
+| `L-SSW` | 306° | SSW | (6.00, −8.26) |
+
+The washroom sits on the `L-NNW`–`L-W` edge, so **`L-W` is the westernmost floor
+vertex** and the washroom's west corner.
+
+Two of the five edges are plain 11.42 ft struts — `L-NE`–`L-SE`, and
+`L-NNW`–`L-W` (the washroom's own base). The other three are **single long beams that
+run along an edge and cantilever out past the pentagon**:
+
+| Beam | Runs along | Cantilevers to |
+| --- | --- | --- |
+| 25.42 ft | `L-NNW`–`L-NE` | 4.5 ft past `L-NNW` (into the washroom) **and** 6.9 ft past `L-NE` (into the east extension) |
+| 17.42 ft | `L-SSW`–`L-W` | 5.7 ft past `L-W` (into the washroom) |
+| 19.42 ft | `L-SSW`–`L-SE` | 6.9 ft past `L-SE` (into the east extension) |
+
+The extensions' outer edges then simply tie the cantilever tips together: the
+washroom's 7.71 ft member spans from the 17.42 ft beam's tip to the 25.42 ft beam's
+tip, and the east extension's 6.48 ft member spans the 25.42 ft and 19.42 ft tips.
+
+So **both extensions are carried on cantilevers off the main floor beams** — no
+separate foundations, which is why the 25.42 ft beam is longer than the dome is wide.
+It is also why those three beams are not optional.
+
+### The two chords Anish wants removed
+
+Anish says two chords run from the washroom's western edges toward the centre of the
+pentagon's main strut, were only ever there to support a raised fibre-cement deck, and
+can go with a floor laid on the ground.
+
+**They are not in this export.** Every floor-level member is accounted for in the
+tables above: five edges (two plain, three cantilevered), the two extension outer
+edges, and ten hub blocks. Nothing runs from `L-W` or `L-NNW` inward toward the centre
+or toward the middle of any strut.
+
+Like the loft's radial struts, they are presumably modelled elsewhere or simply left
+out of the export. Either way the conclusion is the same and nothing is blocked:
+**with the washroom floor laid on the ground there is no floor-support steel needed in
+the washroom**, and the rebuild should leave it out. Worth pointing at them in Blender
+once it is up, to be sure we mean the same members.
 
 ## Can the toilet floor drop, for more headroom?
 
@@ -282,39 +323,85 @@ At the back, where the shower goes:
 So the shower as placed is adequate but not generous, and the corners are tight. The
 figures are read off a tessellated export, so treat them as ±2 in.
 
-### How much the floor can come down
+### The drainage: a floor at +6 in works
 
-The budget is the gap between the finished floor and the biodigester inlet:
+Anish proposes a finished floor **6 in above ground** with the biodigester inlet
+**8 in below**, leaving 1'-2" of fall, and asks whether that is enough. **It is**, and
+with more room than my first estimate suggested.
 
-| | |
-| --- | --- |
-| Toilet floor as designed | +12 in above the upper terrace |
-| Biodigester inlet | −8 in below the upper terrace |
-| **Total available drop** | **20 in** |
-| less the drain's own depth under the floor (pan connector, bend, slab and XPS) | −10 to 12 in |
-| less fall on the run, ~10 ft at 1:40–1:60 | −2 to 3 in |
-| **Slack left** | **about 5–8 in** |
+That first estimate was too pessimistic: it deducted the whole floor build-up (XPS and
+slab) from the budget. That is the wrong measure. What matters is the **invert level of
+the pipe at the WC**, and the build-up only matters if the drain has to pass beneath
+it. Two cases:
 
-So the toilet floor can come down to roughly **4–7 in above the upper terrace** and
-still drain by gravity. That buys 5–8 in of headroom — the shower goes from about
-7'-6" to about **8'-0"**. Worth having, and it costs nothing but setting out.
+| WC type | Invert at the WC | Fall available to the inlet at −8 in |
+| --- | --- | --- |
+| **P-trap** (horizontal outlet) — pipe leaves *above* the slab and drops outside | ≈ +11 in | **19 in** |
+| **S-trap** (floor outlet) — bend sits under the slab | ≈ +1 in | **9 in** |
 
-It cannot go to terrace level or below: the biodigester inlet is only 8 in down, and
-the WC's own drain needs more than that beneath the floor. Going lower means a pump,
-which for a single off-grid house is not worth it.
+Against that, the run needs 1:40–1:60. Over a 12 ft run that is **1.8–3.6 in**.
 
-### Three things to watch if it drops
+So even the worse case — an S-trap and a long run — leaves about **5 in spare**, and a
+P-trap leaves 15 in. The proposal is sound. A P-trap or back-to-wall WC is the better
+choice here, because it keeps the drain out of the slab entirely.
 
-- **The steel sill stays where it is.** The extension's bottom chord sits at
-  1.12–1.71 ft above ground and does not move, so dropping the floor leaves a steel
-  threshold 12–20 in above it. That is actually *good* for a wet room — it contains
-  water — but it becomes a deliberate step down, and the waterproofing has to turn up
-  over it.
-- **Rain.** 3,000 mm a year. A floor near surrounding ground level wants the plinth
-  standing proud, the terrace graded away from the washroom, and the finished floor
-  kept above the finished ground immediately outside the door.
-- **Frost.** Keep the 50 mm XPS under the slab and the 25 mm edge strip, and run the
-  edge strip further down the plinth now that there is less cover.
+Two numbers to nail down before building:
+
+- **Get a level on the biodigester inlet.** The 8 in is from the brief. If the unit is
+  already in the ground, measure it — everything hangs on this one figure, and the
+  brief already flags its outlet height as unconfirmed.
+- **Measure the run** from the WC to the biodigester. Beyond about 15 ft, redo the sum.
+
+And do not spend the surplus badly: with 9–19 in to play with there is a temptation to
+drop steeply then run flat. Keep a steady 1:40–1:60 all the way and take any surplus
+as a back-drop in the chamber at the biodigester end.
+
+### The arguments against — five of them
+
+Anish asked for these, and they are worth taking seriously. None is fatal; two need a
+real answer in the detailing.
+
+**1. The washroom becomes the lowest point of the building, in a 3,000 mm climate.**
+The dome floor is 15 in above ground; this would be 6 in. In a cloudburst, water
+sheeting across the terrace needs only 6 in to come in, and it will find the door.
+This is the strongest objection, because it is a permanent vulnerability rather than a
+detail. It wants the plinth standing proud, the terrace positively graded away, and a
+cut-off drain upslope — the washroom faces NW, so find out which way the terrace
+actually falls before committing.
+
+**2. A 9 in step down from the dome.** Comfortable risers are 6–7 in; 9 in is a lurch,
+barefoot and wet, at night. In a room 7'-8" deep there is not much space for two
+steps. This is the objection most likely to annoy, daily, for years.
+
+**3. The dome's own base strut becomes something to step over.** The washroom sits on
+the `L-NNW`–`L-W` edge, a 2×4 whose top is about 15 in above ground. With the floor at
+6 in, that steel stands 9 in proud *inside* the doorway — so the threshold is both a
+step down and a step over. It has to be boxed in as a kerb. Done well that is a
+positive (it contains shower water, and the tanking turns up over it); done badly it
+is a shin-barker.
+
+**4. A colder floor on the cold side.** NW aspect at 2,000 m with frost. Nearer grade
+means more edge heat loss and a floor that is colder underfoot and slower to dry in a
+shaded wet room. Keep the 50 mm XPS, keep the 25 mm edge strip, and run the edge strip
+deeper down the plinth than the current detail shows.
+
+**5. You are digging into the terrace.** A finished floor at +6 in with 8–9 in of
+build-up puts the bottom of the fill about 3 in *below* ground, so the sub-base can
+collect water and the polythene becomes a bathtub. Use free-draining fill and give it
+somewhere to go.
+
+### What it actually buys, and the cheaper alternative
+
+Dropping from +12 in to +6 in is **6 in of headroom** — the shower on the centre line
+goes from about 7'-6" to **8'-0"**.
+
+Moving the shower 2 ft inboard gains about **15 in**, for nothing, with none of the
+five objections above. Doing both gives roughly **9'-3"**.
+
+There is one genuine benefit of the low floor that relocating the shower does not
+give: with the whole washroom below the dome floor, any leak or overflow drains
+*outward* to the terrace rather than back into the living space. That is worth
+something in a wet room.
 
 ### A bigger lever than the floor
 
