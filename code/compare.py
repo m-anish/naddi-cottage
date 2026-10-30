@@ -44,7 +44,9 @@ def sheet(panels, cols, title, sub, out, pw=1000):
 
 
 if __name__ == "__main__":
-    D = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "renders", "dome", "wainscot_compare") + os.sep
+    BASE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "renders", "dome")
+    D = os.path.join(BASE, "schemes") + os.sep          # the graded renders
+    C = os.path.join(BASE, "wainscot_compare") + os.sep  # the sheets this writes
     which = sys.argv[1]
     if which == "A":
         sheet([
@@ -54,11 +56,11 @@ if __name__ == "__main__":
             (D + "W2c_wainscot_painted_sage.jpg", "D", "Painted boards (sage green)", "Most contrast with a wood floor; a colour you can change later"),
         ], 2, "With and without the 3'-3\" wainscot",
             "Same view and same mid-brown wood floor in all four; only the lower walls change.",
-            D + "C1_wainscot_compare.jpg")
+            C + "C1_wainscot_compare.jpg")
     else:
         sheet([
             (D + "W1b_lime_pinefloor.jpg", "E", "Pine-tone floor, no wainscot", "The floor stands alone as the one warm surface"),
             (D + "W2d_wainscot_pinefloor.jpg", "F", "Pine-tone floor + natural pine wainscot", "Floor and walls merge into one wood colour: the 'too much' case"),
         ], 2, "If the floor is the same tone as the pine",
             "Same view as above with a honey-pine floor instead of mid-brown.",
-            D + "C2_same_tone_floor.jpg")
+            C + "C2_same_tone_floor.jpg")
