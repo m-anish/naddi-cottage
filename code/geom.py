@@ -59,6 +59,21 @@ def headroom(x, y):
     return max(h, 0.0)
 
 
+def walkable_area(h, step=0.04):
+    """floor area, sq ft, with at least h of clear height over it"""
+    a = 0.0
+    y = step / 2
+    while y < D:
+        hw = half_floor(y)
+        x = step / 2
+        while x < hw:
+            if headroom(x, y) >= h:
+                a += 2 * step * step
+            x += step
+        y += step
+    return a
+
+
 # ---------------- design parameters (Layout A, recommended) ----------------
 LEDGE_H = 2.75     # 2'-9" service ledge / counter height
 LEDGE_DX = 2.25    # ledge face: x-distance in from floor edge.
@@ -77,10 +92,12 @@ EDGE_DIR_R = ((BW / 2 - FW / 2) / _L, D / _L)      # front -> back along right e
 NORM_R_IN = (-D / _L, -(FW / 2 - BW / 2) / _L)     # inward normal of right edge (points left & to front)
 EDGE_ANG = math.degrees(math.atan(TAPER))          # 19.65 deg
 
-GLASS_Y = 3.7        # shower screen line (was 4.0, on a 7 ft deep floor)
+GLASS_Y = 3.0        # shower screen line. Was 4.0 on a 7 ft deep floor, which left
+                     # only 1'-11" of shower on the real 5'-8" one. 3.0 gives a
+                     # 2'-8" shower behind a 3'-0" dry zone, clear of the ledges.
 GLASS_DOOR_HW = 1.0  # half width of central glass door
 GLASS_TOP = 6.5
-SHOWER_HEAD = (0.0, 4.6, 7.0)   # was y=5.2, beyond the real back wall
+SHOWER_HEAD = (0.0, 4.3, 7.0)   # was y=5.2, beyond the real back wall
 WC_Y = 2.2           # WC centre (on left ledge face)
 VAN_Y = 2.3          # vanity centre (on right ledge face)
 DOOR_HW = 1.25       # 2'-6" door

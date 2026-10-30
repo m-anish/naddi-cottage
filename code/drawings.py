@@ -44,7 +44,7 @@ def title_block(fig, title, sub, no):
     fig.text(0.965, 0.955, no, fontsize=15, fontweight="semibold", color=ACCENT, va="top", ha="right")
     fig.text(0.965, 0.915, "Naddi cottage · dome extension washroom", fontsize=8, color=GREY, va="top", ha="right")
     fig.add_artist(plt.Line2D([0.035, 0.965], [0.895, 0.895], color=INK, lw=0.8, transform=fig.transFigure))
-    fig.text(0.035, 0.03, "Indicative design drawings — dimensions in feet-inches; back width (7'-0\") estimated from photos, verify on site before fabrication.",
+    fig.text(0.035, 0.03, f"Indicative design drawings — dimensions in feet-inches; geometry measured off the Onshape frame, Oct 2026 (back base {fmt_ftin(BW)}, depth {fmt_ftin(D)}).",
              fontsize=7, color=GREY)
 
 
@@ -356,10 +356,10 @@ def draw_plan_A(fname="01_plan_layoutA.png", p3=False):
 
     # dimensions
     dim(ax, (-FW / 2, 0), (FW / 2, 0), 1.85, side=-1, text="12'-0\" (front triangle base)")
-    dim(ax, (-BW / 2, D), (BW / 2, D), 1.6, side=1, text="7'-0\" (back base, est.)")
+    dim(ax, (-BW / 2, D), (BW / 2, D), 1.6, side=1, text=f"{fmt_ftin(BW)} back base")
     dim(ax, (-FW / 2, 0), (-FW / 2, gy), 0.55, side=1, text="4'-0\"")
     dim(ax, (-FW / 2, gy), (-FW / 2, D), 0.55, side=1, text="3'-0\"")
-    dim(ax, (-FW / 2, 0), (-FW / 2, D), 1.25, side=1, text="7'-0\" deep")
+    dim(ax, (-FW / 2, 0), (-FW / 2, D), 1.25, side=1, text=f"{fmt_ftin(D)} deep")
     # clear width between WC front and vanity front
     wcf = local(ledge_pt(-1, WC_Y), L_ALONG, L_IN, [(0, 1.77)])[0]
     vf = local(ledge_pt(1, VAN_Y), R_ALONG, R_IN, [(0, 1.04)])[0]
@@ -391,8 +391,8 @@ def draw_plan_A(fname="01_plan_layoutA.png", p3=False):
     y = yy - 7.4
     lg.text(0, y, "Why this layout", fontsize=9, fontweight="semibold", color=INK)
     notes = [
-        "The space is a tapering 'tent': floor 12' wide at the front,",
-        "~7' at the back, with both side walls leaning in at ~65°.",
+        f"The space is a tapering 'tent': floor {fmt_ftin(FW)} wide at the front,",
+        f"{fmt_ftin(BW)} at the back, both side slopes at ~{math.degrees(math.atan(A)):.0f}°.",
         "Only a central strip has full standing height, so standing",
         "tasks (entry, basin, shower) sit on the centre line and the",
         "WC / vanity tuck against the slopes where you sit or bend.",
@@ -403,13 +403,13 @@ def draw_plan_A(fname="01_plan_layoutA.png", p3=False):
         "• The front wall leans in over the floor, so the door sits",
         "  in a small vertical 'portal' box (6'-8\" soffit) instead",
         "  of in the leaning plane.",
-        "• Shower is at the back under the ridge (7'-0\" head, ridge",
-        "  ~8'-3\" above you) beside the existing window; the dry",
+        f"• Shower is at the back under the ridge ({fmt_ftin(SHOWER_HEAD[2])} head,",
+        f"  ridge {fmt_ftin(side_z(0, SHOWER_HEAD[1]))} above you); the dry",
         ("  zone stays dry behind a tiled partition + curtain." if p3 else "  zone stays dry behind a raked glass screen."),
-        "• Steam rises to the front apex (10'-0\"): exhaust fan high",
+        f"• Steam rises to the front apex ({fmt_ftin(APEX_F[2])}): exhaust fan high",
         "  on the slope near the ridge, ducted outside.",
         "",
-        "Floor: 66.5 sq ft gross · ~36 sq ft walkable",
+        f"Floor: {(FW + BW) / 2 * D:.1f} sq ft gross · ~{walkable_area(6.0):.0f} sq ft over 6'-0\"",
     ]
     if p3:
         notes = notes[:-1] + [
@@ -484,7 +484,7 @@ def draw_long_section(fname="02_section_long.png"):
     ax.plot([0, FRONT_LEDGE_Y], [0, LEDGE_H], color=GREY, lw=LW_THIN, ls="--")
     # floor edge beyond is the floor; left slope meets front wall (projection = front line) - draw front plane line below portal dashed
     ax.plot([0, py], [0, pz], color=GREY, lw=LW_THIN, ls=(0, (4, 3)))
-    tag(ax, (0.75, 4.4), "front wall plane\n(15° lean)", fs=6.2, rot=75, color=GREY)
+    tag(ax, (0.75, 4.4), f"front wall plane\n({math.degrees(LEAN):.0f}° lean)", fs=6.2, rot=75, color=GREY)
     # WC beyond (side elevation)
     wy = WC_Y
     ax.add_patch(FancyBboxPatch((wy - 0.62, 1.0), 1.24, 0.33, boxstyle="round,pad=0.02,rounding_size=0.12",
@@ -523,15 +523,15 @@ def draw_long_section(fname="02_section_long.png"):
     # dims
     def vdim(x, z0, z1, txt=None, side=1):
         dim(ax, (x, z0), (x, z1), 0.0, text=txt, side=side, ext=False)
-    vdim(-2.2, 0, Fz, "10'-0\" front apex")
-    vdim(10.4, 0, Bz, "5'-10\" back apex")
+    vdim(-2.2, 0, Fz, f"{fmt_ftin(Fz)} front apex")
+    vdim(10.4, 0, Bz, f"{fmt_ftin(Bz)} back apex")
     vdim(-1.2, 0, pz, "6'-8\"")
     vdim(sy + 0.75, 0, sz, "7'-0\"")
     vdim(sy + 1.6, 0, rz, fmt_ftin(rz))
     vdim(11.35, w0[1], w1[1], "win.")
-    dim(ax, (0, -3.15), (D, -3.15), 0.0, text="7'-0\" floor", ext=False)
-    dim(ax, (0, -2.45), (GLASS_Y, -2.45), 0.0, text="4'-0\" dry zone", ext=False)
-    dim(ax, (GLASS_Y, -2.45), (D, -2.45), 0.0, text="3'-0\" shower", ext=False)
+    dim(ax, (0, -3.15), (D, -3.15), 0.0, text=f"{fmt_ftin(D)} floor", ext=False)
+    dim(ax, (0, -2.45), (GLASS_Y, -2.45), 0.0, text=f"{fmt_ftin(GLASS_Y)} dry zone", ext=False)
+    dim(ax, (GLASS_Y, -2.45), (D, -2.45), 0.0, text=f"{fmt_ftin(D - GLASS_Y)} shower", ext=False)
     dim(ax, (0, pz + 0.75), (py, pz + 0.75), 0.0, text=fmt_ftin(py), ext=False, fs=6.6)
 
     # labels
@@ -645,7 +645,7 @@ def draw_cross_section(fname="03_section_cross.png"):
     ax.plot([m1[0] + 0.1, 8.0], [6.3, 6.3], color=GREY, lw=LW_HAIR)
 
     label(ax, ((m0[0] + m1[0]) / 2, 5.45), "mirror fixed to the slope — it tilts\n~25° downward, like an accessible\ntilt-mirror; a vertical mirror would\nhang into your head when washing", (3.8, 8.9), fs=6.6, color=WATER)
-    label(ax, (-hf + 0.9, 1.4), "insulated, lined\nslope (65°)", (-8.4, 3.6), fs=6.6)
+    label(ax, (-hf + 0.9, 1.4), f"insulated, lined\nslope ({math.degrees(math.atan(A)):.0f}°)", (-8.4, 3.6), fs=6.6)
     label(ax, (-lxx - 0.3, LEDGE_H), "ledge shelf", (-8.4, 2.3), fs=6.6)
     label(ax, (-1.6, 5.4), "raked glass screen,\nshower beyond", (-8.4, 6.3), fs=6.4, color=WATER)
     label(ax, (0, APEX_B[2] - 0.4), "back wall + window beyond", (-6.6, 7.6), fs=6.4, color=GREY)
