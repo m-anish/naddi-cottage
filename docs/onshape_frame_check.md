@@ -296,11 +296,16 @@ tables above: five edges (two plain, three cantilevered), the two extension oute
 edges, and ten hub blocks. Nothing runs from `L-W` or `L-NNW` inward toward the centre
 or toward the middle of any strut.
 
-Like the loft's radial struts, they are presumably modelled elsewhere or simply left
-out of the export. Either way the conclusion is the same and nothing is blocked:
-**with the washroom floor laid on the ground there is no floor-support steel needed in
-the washroom**, and the rebuild should leave it out. Worth pointing at them in Blender
-once it is up, to be sure we mean the same members.
+Anish has since identified them from a photo taken from the dome centre looking NW
+into the washroom: **two diagonals running from the corners of the washroom's base
+edge to a point at the middle of that strut**, forming a shallow V across the floor
+opening, on galvanised brackets. Mid-span support for a raised deck, carrying nothing
+else — and confirmed absent from the export.
+
+So they simply do not appear in the rebuild. **With the washroom floor laid on the
+ground there is no floor-support steel needed in the washroom at all.** The same photo
+shows the opening still open to excavated ground, so the floor level is not yet fixed
+by anything built.
 
 ## Can the toilet floor drop, for more headroom?
 
