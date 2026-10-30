@@ -98,11 +98,33 @@ re-aiming, since the room turns under them.
 
 The brief describes only the washroom. The frame has two.
 
-**At 198° — the washroom, the "8 ft" one.** Framed from 24 ft stock cut to **7.71 ft**
-(7'-8½"): one member at floor level (mid-radius 13.9 ft), a pair at mid-height
-(mid-radius 14.9 ft, at 192° and 204°), and a pair of 18 ft rafters overhead. The
-brief estimated ~7 ft deep; **7'-8½" is the number to use**, and
-`code/geom.py`'s washroom depth should be reset to it.
+Both have a **12'-0" opening** — the lower-ring edge they spring from — and both lean
+out as they rise.
+
+> **Correction.** An earlier version of this note gave the washroom as 7'-8½" deep and
+> the east one as 6'-5¾". Those are the lengths of the *outer members* — the "8 ft"
+> and "6 ft" struts Anish named — measured across the back of each extension. They are
+> widths, not depths. The depths are below, and on them the **east extension is the
+> deeper of the two**, despite its shorter back member: the extensions taper as they
+> project.
+
+| | washroom (`up0`, NW) | east (`up3`, E) |
+| --- | --- | --- |
+| Opening (lower-ring edge) | 12'-0" | 12'-0" |
+| Back member — the named strut | 7.71 ft (**"8 ft"**) | 6.48 ft (**"6 ft"**) |
+| Depth at floor | **5'-7½"** | **7'-6"** |
+| Depth at mid-height | 6'-8" | 8'-5" |
+| Depth at the ridge | 6'-10" | 8'-7" |
+| Wall lean | **16.2°** | **16.6°** |
+
+**The wall lean settles an open question.** The brief had Anish's estimate of 15° against
+the ~11° the dome geometry suggests; the frame says **16°**, so `code/geom.py`'s 15° was
+very nearly right and the 11° figure should be dropped. The washroom's back wall is
+about **8'-3"** wide between the cantilever tips.
+
+**At 198° — the washroom, the "8 ft" one.** One member at floor level (mid-radius
+13.9 ft), a pair at mid-height (mid-radius 14.9 ft, at 192° and 204°), and a pair of
+18 ft rafters overhead forming the ridge.
 
 Its outer corner hub (`3-way-top`) sits at radius 14.9–15.3 ft and only
 **6.59–7.39 ft above the floor**. The washroom design puts the shower at the back
@@ -110,13 +132,13 @@ Its outer corner hub (`3-way-top`) sits at radius 14.9–15.3 ft and only
 6'-7" at the corner. Worth checking the shower head and the raked screen against that
 before anything is ordered.
 
-**At 54° — the "6 ft" one, facing east.** Framed from 24 ft stock cut to **6.48 ft**
-(6'-5¾"): one member at floor level (mid-radius 15.8 ft), a pair at mid-height
-(mid-radius 16.7 ft, at 48° and 60°), and a pair of 20 ft rafters. It sits about 2 ft
-further out in plan than the washroom does, and its outer corner hub is lower still —
-radius 16.6–17.0 ft at **5.54–6.34 ft** above the floor. Anish says it takes the
-morning sun. What it is *for* is still open — on the rotation above it is the face
-`dome.py` calls `up3`, which carries the main door.
+**At 54° — the "6 ft" one, facing east.** One member at floor level (mid-radius
+15.8 ft), a pair at mid-height (mid-radius 16.7 ft, at 48° and 60°), and a pair of
+20 ft rafters. At **7'-6" deep it is the roomier of the two**, but its outer corner hub
+is lower — radius 16.6–17.0 ft at **5.54–6.34 ft** above the floor — so it is a
+deeper, squatter space than the washroom. Anish says it takes the morning sun. What it
+is *for* is still open; on the rotation above it is the face `dome.py` calls `up3`,
+which carries the main door.
 
 ## Which way the building faces
 
@@ -430,7 +452,8 @@ together would give a shower with well over 8 ft of clear height.
 4. Re-aim the cameras after the rotation, and give the sun a real bearing for
    Dharamsala instead of a generic sky.
 5. Model the upper ring as a pair at 10.20 and 10.44 ft.
-6. Reset the washroom depth in `code/geom.py` to **7'-8½"**.
+6. Reset the washroom in `code/geom.py`: **5'-7½"** deep at the floor, **16°** lean,
+   back wall about **8'-3"** wide.
 7. Rebuild `loft()` as a suspended platform at `LOFT_Z = 8.46`, hung from the five
    vertex hangers and the central drop, spanning the NNE–NW–SW sector, and add the
    missing radial struts.
@@ -447,8 +470,6 @@ together would give a shower with well over 8 ft of clear height.
   lengths. Positions are measured; their internal geometry is not.
 - Which three hangers carry the loft's radial struts.
 - What the east extension is for.
-- The washroom's real back-wall width and lean angle, which the extension framing
-  should now settle — the brief has 15° against the dome's ~11°.
 - A compass bearing on site, to firm up "roughly east".
 - A STEP export would give exact dimensions; the glb is tessellated, so every number
   here is read off triangle vertices rather than true edges.

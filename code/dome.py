@@ -21,12 +21,25 @@ R_RING = 2 * R_CIRC / math.sqrt(5)                    # 10.21
 ZC = H_RING                                           # icosahedron centre above floor
 R_IN = A_EDGE * ((1 + math.sqrt(5)) / 2) ** 2 / (2 * math.sqrt(3))   # 9.07 inradius
 D_LIN = 0.45                                          # lining plane inside the exterior skin
-Z_UP = 2 * H_RING                                     # 10.21 upper ring
+Z_UP = 2 * H_RING                                     # 10.21 upper ring (the lower of the pair)
+Z_UP2 = Z_UP + 0.24                                   # 10.44 the frame doubles this ring
 Z_TOP = H_RING + R_CIRC                               # 16.51
 DATUM = 3.25                                          # wainscot / sill datum
-LOFT_Z = 9.0                                          # loft finished floor
-LOFT_Y = 2.6                                          # loft covers y >= LOFT_Y (assumed)
+GROUND_Z = -1.25                                      # the frame stands 1'-3" clear of the ground
+STRUT_LEN = 11.417                                    # real steel strut, 11'-5"
+HUB_SETBACK = 3.5 / 12                                # hub at each end makes up the 12 ft edge
+
+# Loft: measured off the Onshape frame. Not a slab on posts - a platform hung from
+# the five upper-ring vertices and from a 3x3" drop off the apex, with radial
+# struts to three of the five hangers (NNE, NW, SW), so it is a 144 deg sector.
+LOFT_Z = 8.46                                         # platform datum, 8'-5"
+LOFT_FACES = (4, 0, 1)                                # Ur indices carrying radial struts
+HANG_TOP_R, HANG_TOP_Z = 9.37, 10.11                  # hanger head, on the upper ring
+HANG_FOOT_R = 10.19                                   # hanger foot, at LOFT_Z
+DROP_TOP_Z = 16.14                                    # central drop, just under the apex hub
 O = Vector((0, 0, ZC))
+
+ROT = 108.0   # the model was turned this far to match the frame as built
 
 
 def pol(r, deg, z):
@@ -34,8 +47,18 @@ def pol(r, deg, z):
     return Vector((r * math.cos(a), r * math.sin(a), z))
 
 
-Lr = [pol(R_RING, 126 + 72 * k, 0.0) for k in range(5)]
-Ur = [pol(R_RING, 90 + 72 * k, Z_UP) for k in range(5)]
+def rot_z(p, deg=ROT):
+    a = math.radians(deg)
+    c, s = math.cos(a), math.sin(a)
+    return Vector((p.x * c - p.y * s, p.x * s + p.y * c, p.z))
+
+
+# Turned +108 deg from the first guess so the model sits the way the frame is built:
+# floor ring at 18+72k, upper ring at 54+72k, both measured off the Onshape export.
+# Face names do not change, so OPENINGS and SCHEMES still mean the same walls -
+# up0 is the washroom (NW) and up3 the east extension. See docs/onshape_frame_check.md.
+Lr = [pol(R_RING, 234 + 72 * k, 0.0) for k in range(5)]
+Ur = [pol(R_RING, 198 + 72 * k, Z_UP) for k in range(5)]
 T = Vector((0, 0, Z_TOP))
 
 FACES = []   # (name, kind, k, verts)
@@ -126,6 +149,79 @@ def to_m(p):
     return Vector((p.x * M, p.y * M, p.z * M))
 
 
+def bearing(deg):
+    """plan angle in the model -> compass bearing. The east extension (up3, 54 deg)
+    faces east, so bearing = 144 - angle. See docs/onshape_frame_check.md."""
+    return (144.0 - deg) % 360.0
+
+
+def sun_dir(bearing_deg, altitude_deg):
+    """direction towards the sun, in model coordinates, from a compass bearing"""
+    a = math.radians(144.0 - bearing_deg)
+    el = math.radians(altitude_deg)
+    return (math.cos(a) * math.cos(el), math.sin(a) * math.cos(el), math.sin(el))
+
+
+# Dharamsala is 32.2 N, 76.3 E. Mid-morning, when the east extension takes the sun
+# and the light rakes across the room rather than facing the camera.
+SUN_BEARING, SUN_ALT = 118.0, 34.0
+
+
+def member(name, a, b, w, d, mat, bevel=0.01):
+    """a rectangular steel member from a to b (feet): w across, d through"""
+    e = (b - a).normalized()
+    side = e.cross(Vector((0, 0, 1)))
+    if side.length < 1e-6:
+        side = Vector((1, 0, 0))
+    side = side.normalized()
+    nrm = side.cross(e).normalized()
+    r0 = [a + side * w / 2 + nrm * d / 2, a - side * w / 2 + nrm * d / 2,
+          a - side * w / 2 - nrm * d / 2, a + side * w / 2 - nrm * d / 2]
+    r1 = [p + (b - a) for p in r0]
+    return prism(name, [to_m(p) for p in r0], [to_m(p) for p in r1], mat, bevel=bevel)
+
+
+def sector_clip(poly, a_from, a_to):
+    """keep the part of poly inside the sector running anticlockwise a_from -> a_to
+    (sectors up to 180 deg; ours is 144)"""
+    n1 = math.radians(a_from + 90)
+    n2 = math.radians(a_to - 90)
+    poly = clip_poly(poly, lambda p: p.x * math.cos(n1) + p.y * math.sin(n1))
+    poly = clip_poly(poly, lambda p: p.x * math.cos(n2) + p.y * math.sin(n2))
+    return dedupe(poly)
+
+
+def loft_sector():
+    angs = [(198 + 72 * k) % 360 for k in LOFT_FACES]
+    return angs[0], angs[-1]
+
+
+def lining_radius(deg, z, hi=14.0):
+    """plan radius of the finished lining surface at this angle and height"""
+    a = math.radians(deg)
+    lo = 0.0
+    for _ in range(40):
+        mid = (lo + hi) / 2
+        p = Vector((mid * math.cos(a), mid * math.sin(a), z))
+        if min(hs(nm)(p) for nm in NAMES) > 0:
+            lo = mid
+        else:
+            hi = mid
+    return lo
+
+
+def lining_apex_z(hi=20.0):
+    """height of the lining on the dome axis"""
+    lo = 0.0
+    for _ in range(40):
+        mid = (lo + hi) / 2
+        if min(hs(nm)(Vector((0, 0, mid))) for nm in NAMES) > 0:
+            lo = mid
+        else:
+            hi = mid
+    return lo
+
+
 # ------------------------------------------------------------------ openings
 # kind, face, u-centre, width, z0, z1
 OPENINGS = [
@@ -138,6 +234,38 @@ OPENINGS = [
     ("window", "down1", 0.0, 5.0, 7.3, 8.6),
     ("window", "up2", 0.0, 2.5, 3.5, 6.0),
 ]
+
+# ------------------------------------------------------------------ extensions
+# Both extensions spring from an "up" face. The floor is the lower-ring edge carried
+# out on the cantilevered floor beams (the tips below are measured off the frame);
+# the ridge is the rafter running out past the upper-ring vertex. Walls lean out ~16
+# deg, which is what Anish estimated (15) rather than the ~11 the dome alone suggests.
+#   up0  washroom, NW: 12 ft opening, 5'-8" deep at the floor, 6'-10" at the ridge
+#   up3  east,      E: 12 ft opening, 7'-6" deep at the floor, 8'-7" at the ridge
+EXT_GEOM = {
+    "up0": (((-14.27, -0.28), (-11.71, -8.16)), 15.13, 7.36),
+    "up3": (((12.00, 10.51), (6.29, 14.66)), 16.84, 6.31),
+}
+
+
+def extension(P, name, wall_mat, floor_mat):
+    (t1, t2), rr, rz = EXT_GEOM[name]
+    b1, b2, ua = [f for f in FACES if f[0] == name][0][3]
+    T1 = Vector((t1[0], t1[1], 0.0))
+    T2 = Vector((t2[0], t2[1], 0.0))
+    ang = math.atan2(ua.y, ua.x)
+    RG = Vector((rr * math.cos(ang), rr * math.sin(ang), rz))
+    panels = [("floor", (b1, T1, T2, b2), floor_mat),
+              ("s1", (b1, T1, RG, ua), wall_mat),
+              ("s2", (b2, T2, RG, ua), wall_mat),
+              ("outer", (T1, T2, RG), wall_mat)]
+    for tag, poly, mat in panels:
+        ob = add_obj(f"ext_{name}_{tag}", [to_m(p) for p in poly],
+                     [list(range(len(poly)))], mat)
+        sm = ob.modifiers.new("solid", "SOLIDIFY")
+        sm.thickness = 0.25 * M
+        sm.offset = 1.0 if tag == "floor" else -1.0
+    return RG
 
 
 # ------------------------------------------------------------------ materials
@@ -405,66 +533,92 @@ def struts(P, mat, roof_only=False, steel=False):
             r0 = [a + wv * hw - m * 0.05, a - wv * hw - m * 0.05, a - wv * hw + m * dp, a + wv * hw + m * dp]
             r1 = [p + (b - a) for p in r0]
             prism("strut", [to_m(p) for p in r0], [to_m(p) for p in r1], mat, bevel=0.012)
+            # the frame doubles the upper ring: a second member Z_UP2 - Z_UP above it
+            if abs(a.z - Z_UP) < 0.3 and abs(b.z - Z_UP) < 0.3:
+                dz = Vector((0, 0, Z_UP2 - Z_UP))
+                prism("strut_ring2", [to_m(p + dz) for p in r0],
+                      [to_m(p + dz) for p in r1], mat, bevel=0.012)
 
 
 def loft(P):
-    sec = section_at_z(LOFT_Z)
-    top = clip_poly(sec, lambda p: p.y - LOFT_Y)
+    """Suspended platform on the real frame: a 144 deg sector hung off three of the
+    five upper-ring hangers, its inner corner carried by a 3x3" drop from the apex.
+    Replaces the straight-edged slab on posts that the brief assumed."""
+    a0, a1 = loft_sector()
+    top = sector_clip(section_at_z(LOFT_Z), a0, a1)
+    if len(top) < 3:
+        return
     bot_z = LOFT_Z - 0.25
-    sec_b = section_at_z(bot_z)
-    bot = clip_poly(sec_b, lambda p: p.y - LOFT_Y)
-    # slab: build as flat top + bottom + fascia (approximate with prism of top polygon)
     r1 = [to_m(p) for p in top]
     r0 = [to_m(Vector((p.x, p.y, bot_z))) for p in top]
     prism("loft_slab", r0, r1, P["loft"])
-    # joists visible underneath
-    xs = [p.x for p in bot]
-    for x in [i * 1.33 for i in range(-6, 7)]:
-        seg = [p for p in bot]
-        ymax = max(p.y for p in bot if True)
-        # find y extent at this x inside the polygon (approx: clip line)
-        line = clip_poly([Vector((x - 0.08, LOFT_Y, bot_z)), Vector((x + 0.08, LOFT_Y, bot_z)), Vector((x + 0.08, 20, bot_z)),
-                          Vector((x - 0.08, 20, bot_z))], lambda p: min(hs(nm)(p) for nm in NAMES))
-        if len(line) < 3:
-            continue
-        y1 = max(p.y for p in line)
-        if y1 - LOFT_Y < 0.5:
-            continue
-        box("joist", (x - 0.1, LOFT_Y, bot_z - 0.35), (x + 0.1, y1 - 0.05, bot_z), P["loft"])
-    # edge beam
-    xs_edge = [p.x for p in top if abs(p.y - LOFT_Y) < 1e-6]
-    x0, x1 = min(xs_edge), max(xs_edge)
-    box("loft_beam", (x0, LOFT_Y - 0.02, LOFT_Z - 0.75), (x1, LOFT_Y + 0.35, LOFT_Z), P["loft"])
-    # railing (gap for ladder at x -3.3..-2.0)
+
+    # The five hangers dropping off the upper-ring vertices. Measured, their feet sit
+    # at radius HANG_FOOT_R, which is about 9 in OUTSIDE the lining plane - they would
+    # be buried in the wall build-up. Drawn pulled in to the lining face instead, so
+    # the platform is seen to bear on something. The clash is real and the lining has
+    # to be notched around them; see docs/onshape_frame_check.md.
+    for k in range(5):
+        ang = (198 + 72 * k) % 360
+        a = math.radians(ang)
+        rf = min(HANG_FOOT_R, lining_radius(ang, LOFT_Z) - 0.08)
+        head = Vector((HANG_TOP_R * math.cos(a), HANG_TOP_R * math.sin(a), HANG_TOP_Z))
+        foot = Vector((rf * math.cos(a), rf * math.sin(a), LOFT_Z))
+        member(f"loft_hanger{k}", head, foot, 3.0 / 12, 9.55 / 12, P["steel_paint"])
+
+    # the central drop from the apex hub, stopped at the roof lining
+    ztop = min(DROP_TOP_Z, lining_apex_z() - 0.05)
+    member("loft_drop", Vector((0, 0, ztop)), Vector((0, 0, LOFT_Z - 0.07)),
+           3.0 / 12, 3.0 / 12, P["steel_paint"])
+
+    # radial struts: centre node out to three of the hangers (missing from the export)
+    zr = LOFT_Z - 0.42
+    for k in LOFT_FACES:
+        a = math.radians(198 + 72 * k)
+        member(f"loft_strut{k}", Vector((0, 0, zr)),
+               Vector((HANG_FOOT_R * math.cos(a), HANG_FOOT_R * math.sin(a), zr)),
+               2.0 / 12, 4.0 / 12, P["steel_paint"])
+
+    # railing along the two open radial edges; the second is left open for the ladder
     rail_h = 3.0
-    posts = [x0 + 0.3] + [x for x in [i * 2.0 for i in range(-4, 5)] if x0 + 0.6 < x < x1 - 0.6] + [x1 - 0.3]
-    for x in posts:
-        if -3.4 < x < -1.9:
-            continue
-        box("post", (x - 0.09, LOFT_Y + 0.05, LOFT_Z), (x + 0.09, LOFT_Y + 0.23, LOFT_Z + rail_h), P["loft"])
-    for (a, b) in ((x0 + 0.2, -3.4), (-1.9, x1 - 0.2)):
-        box("rail", (a, LOFT_Y + 0.02, LOFT_Z + rail_h), (b, LOFT_Y + 0.26, LOFT_Z + rail_h + 0.15), P["loft"])
-        for zz in (LOFT_Z + 1.0, LOFT_Z + 2.0):
-            cyl("rail_bar", to_m(Vector((a, LOFT_Y + 0.14, zz))), to_m(Vector((b, LOFT_Y + 0.14, zz))), 0.03 * M, P["black"])
-    # ladder
-    lx0, lx1 = -3.25, -2.05
-    yb, yt = LOFT_Y - 3.1, LOFT_Y
-    for lx in (lx0, lx1):
-        a = Vector((lx, yb, 0.0))
-        b = Vector((lx, yt, LOFT_Z + 0.2))
-        d = (b - a).normalized()
-        side = Vector((1, 0, 0))
-        nrm = d.cross(side).normalized()
-        r0 = [a - side * 0.07 - nrm * 0.2, a + side * 0.07 - nrm * 0.2, a + side * 0.07 + nrm * 0.2, a - side * 0.07 + nrm * 0.2]
-        r1 = [p + (b - a) for p in r0]
-        prism("stringer", [to_m(p) for p in r0], [to_m(p) for p in r1], P["ladder"], bevel=0.01)
+    for idx, ang in enumerate((a0, a1)):
+        a = math.radians(ang)
+        d = Vector((math.cos(a), math.sin(a), 0))
+        rmax = max((p.x * d.x + p.y * d.y) for p in top)
+        gap = (rmax - 3.9, rmax - 2.3) if idx == 1 else None
+        n = 7
+        for i in range(n + 1):
+            r = 0.7 + (rmax - 1.2) * i / n
+            if gap and gap[0] < r < gap[1]:
+                continue
+            c = Vector((r * d.x, r * d.y, LOFT_Z))
+            member(f"loft_post{idx}_{i}", c, c + Vector((0, 0, rail_h)), 0.18, 0.18, P["loft"])
+        spans = ((0.7, gap[0]), (gap[1], rmax - 0.5)) if gap else ((0.7, rmax - 0.5),)
+        for si, (ra, rb) in enumerate(spans):
+            if rb - ra < 0.3:
+                continue
+            member(f"loft_rail{idx}_{si}",
+                   Vector((ra * d.x, ra * d.y, LOFT_Z + rail_h)),
+                   Vector((rb * d.x, rb * d.y, LOFT_Z + rail_h)), 0.26, 0.15, P["loft"])
+            for zz in (LOFT_Z + 1.0, LOFT_Z + 2.0):
+                cyl("rail_bar", to_m(Vector((ra * d.x, ra * d.y, zz))),
+                    to_m(Vector((rb * d.x, rb * d.y, zz))), 0.03 * M, P["black"])
+
+    # ladder, climbing to the gap left in the second railing
+    a = math.radians(a1)
+    d = Vector((math.cos(a), math.sin(a), 0))
+    side = Vector((-d.y, d.x, 0))
+    rmax = max((p.x * d.x + p.y * d.y) for p in top)
+    rl = rmax - 3.1
+    land = Vector((rl * d.x, rl * d.y, LOFT_Z + 0.2))
+    foot = Vector((rl * d.x, rl * d.y, 0.0)) - d * 2.7
+    for s in (-1, 1):
+        o = side * s * 0.6
+        member("stringer", foot + o, land + o, 0.14, 0.4, P["ladder"])
     nr = 10
     for i in range(1, nr):
-        f = i / nr
-        y = yb + (yt - yb) * f
-        z = (LOFT_Z + 0.2) * f
-        box("tread", (lx0 + 0.05, y - 0.22, z - 0.06), (lx1 - 0.05, y + 0.22, z + 0.06), P["ladder"])
-
+        p = foot + (land - foot) * (i / nr)
+        member("tread", p - side * 0.55, p + side * 0.55, 0.42, 0.12, P["ladder"])
 
 def furniture(P):
     # rug
@@ -563,6 +717,15 @@ def build(scheme, P, cut=False):
     fl = [to_m(Vector((p.x, p.y, 0.0))) for p in section_at_z(0.0005)]
     ob = add_obj("floor", fl, [list(range(len(fl)))], P["floor_pine"] if scheme.endswith("pinefloor") else P["floor"])
     ob.modifiers.new("s", "SOLIDIFY").thickness = 0.3 * M
+    # ground: the frame stands GROUND_Z clear of it, so the floor void reads in the cut
+    g = 26.0
+    add_obj("ground", [to_m(Vector(p)) for p in
+                       ((-g, -g, GROUND_Z), (g, -g, GROUND_Z), (g, g, GROUND_Z), (-g, g, GROUND_Z))],
+            [[0, 1, 2, 3]], P["poche"])
+    # the washroom (up0) and east (up3) extensions, seen through their door portals
+    for ext in EXT_GEOM:
+        if not (cut and _cut_away(ext)):
+            extension(P, ext, P["lime"], P["floor"])
     if roof_struts:
         struts(P, P[roof_struts], roof_only=True, steel=(roof_struts == "steel_paint"))
     if scheme in ("wainscot", "combo", "w_wainscot", "w_wainscot_pine", "w_wainscot_pinefloor"):
@@ -631,10 +794,16 @@ def cam_look(loc, tgt, lens, shift=(0, 0)):
     return co
 
 
+# Camera positions are written as they always were, against the room rather than the
+# compass, and turned with the building by ROT when the camera is made. So "hero"
+# still looks at the same wall it always did.
 VIEWS = {
     "hero": ((0.3, -7.7, 5.2), (0.0, 3.0, 7.6), 13.0),
     "back": ((4.6, -2.6, 5.0), (-4.0, 0.6, 6.6), 15.0),
+    # outside, on the NNE bisector, so both extensions show at once
+    "massing": ((42.8, 14.0, 22.0), (0.0, 0.0, 6.0), 35.0),
 }
+CUT_VIEW = ((26.0, -14.0, 20.0), (0.0, 0.5, 5.5), 30.0)
 
 
 def main():
@@ -649,17 +818,14 @@ def main():
     P = materials()
     cut = view in ("cut", "line_cut")
     build(scheme, P, cut=cut)
-    if view in ("cut", "line_cut"):
-        cam_look((26.0, -14.0, 20.0), (0.0, 0.5, 5.5), 30.0)
-    else:
-        loc, tgt, lens = VIEWS[view.replace("line_", "")]
-        cam_look(loc, tgt, lens)
+    loc, tgt, lens = CUT_VIEW if cut else VIEWS[view.replace("line_", "")]
+    cam_look(rot_z(Vector(loc)), rot_z(Vector(tgt)), lens)
     if view.startswith("line"):
         line_render(out, W, H)
         print("WROTE", out)
         return
     world_sky()
-    sun((0.75, 0.55, 0.55), 4.5)
+    sun(sun_dir(SUN_BEARING, SUN_ALT), 4.5)
     render_settings(samples, W, H, -0.2)
     sc = bpy.context.scene
     sc.cycles.diffuse_bounces = 5
