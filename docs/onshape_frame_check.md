@@ -115,12 +115,20 @@ out as they rise.
 | Depth at floor | **5'-7½"** | **7'-6"** |
 | Depth at mid-height | 6'-8" | 8'-5" |
 | Depth at the ridge | 6'-10" | 8'-7" |
-| Wall lean | **16.2°** | **16.6°** |
+| Wall lean | **~12°** | ~12° |
 
-**The wall lean settles an open question.** The brief had Anish's estimate of 15° against
-the ~11° the dome geometry suggests; the frame says **16°**, so `code/geom.py`'s 15° was
-very nearly right and the 11° figure should be dropped. The washroom's back wall is
-about **8'-3"** wide between the cantilever tips.
+**The wall lean settles an open question — in favour of the dome geometry.** The brief
+had Anish's estimate of 15° against the ~11° the dome suggests. Measured corner to
+corner on the washroom, the front wall (the dome face) leans **12.1°** and the back wall
+**12.6°**. So ~11° was nearer the mark than 15°, and `code/geom.py` has been set to 12°.
+
+> **Correction.** An earlier version of this note said 16°, and concluded the 15°
+> estimate was right. That came from comparing the *midpoints* of raking members at
+> two heights, which overstates the lean, because a raking member's midpoint moves
+> outward for reasons other than lean. Measured properly — floor edge to apex — it is
+> 12°.
+
+The washroom's back wall is about **8'-3"** wide between the cantilever tips.
 
 **At 198° — the washroom, the "8 ft" one.** One member at floor level (mid-radius
 13.9 ft), a pair at mid-height (mid-radius 14.9 ft, at 192° and 204°), and a pair of
@@ -161,6 +169,10 @@ Two things worth drawing out of this, because they bear on decisions already tak
 - **The washroom faces northwest** — the coldest, dullest aspect, and at 2,000 m with
   frosty winters that matters for a wet room. Worth a look at the glazing and at how
   much heat the shower end loses.
+- **Only about 40% of the washroom floor has 6 ft of headroom** (23 of 57 sq ft).
+  Drawing A-06 maps it: the usable band runs 5'-6" wide at the dome end down to 2'-3"
+  at the back. Layout A survives this with one change — the vanity ledge pulled in
+  4 inches, which takes the basin from 5'-11" clear to 6'-7".
 - **The main living space gets its best light from the SSE and SW faces** (`up2`,
   `up1`). The brief's recommended Scheme 2 — pine wainscot below, limewash above —
   reads very differently in hard afternoon SW light than in the soft north light the
@@ -452,8 +464,8 @@ together would give a shower with well over 8 ft of clear height.
 4. Re-aim the cameras after the rotation, and give the sun a real bearing for
    Dharamsala instead of a generic sky.
 5. Model the upper ring as a pair at 10.20 and 10.44 ft.
-6. Reset the washroom in `code/geom.py`: **5'-7½"** deep at the floor, **16°** lean,
-   back wall about **8'-3"** wide.
+6. Reset the washroom in `code/geom.py`: **5'-7½"** deep at the floor, **12°** lean,
+   back wall about **8'-3"** wide. *(Done.)*
 7. Rebuild `loft()` as a suspended platform at `LOFT_Z = 8.46`, hung from the five
    vertex hangers and the central drop, spanning the NNE–NW–SW sector, and add the
    missing radial struts.

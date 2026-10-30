@@ -7,10 +7,13 @@ Units: feet. Axes:
 """
 import math
 
-FW = 12.0          # front triangle side (ft)
-BW = 7.0           # back triangle side (ft) -- estimated from photos
-D = 7.0            # floor depth front->back (ft)
-LEAN = math.radians(15.0)   # front & back walls lean "back" (top away from main room)
+# Measured off the Onshape frame, Oct 2026 (docs/onshape_frame_check.md).
+# Was FW 12 / BW 7 / D 7 / lean 15 deg, the last three estimated from photos:
+# the real extension is shallower, wider at the back and leans less.
+FW = 12.0          # front triangle side (ft) -- the dome's lower-ring edge, confirmed
+BW = 8.30          # back triangle side (ft) -- 7.72 strut + hubs
+D = 5.63           # floor depth front->back (ft)
+LEAN = math.radians(12.0)   # front & back walls lean "back"; measured 12.1 and 12.6 deg
 
 S15, C15, T15 = math.sin(LEAN), math.cos(LEAN), math.tan(LEAN)
 
@@ -58,7 +61,9 @@ def headroom(x, y):
 
 # ---------------- design parameters (Layout A, recommended) ----------------
 LEDGE_H = 2.75     # 2'-9" service ledge / counter height
-LEDGE_DX = 1.90    # ledge face: x-distance in from floor edge
+LEDGE_DX = 2.25    # ledge face: x-distance in from floor edge.
+                   # Was 1.90, which left only 5'-11" over someone standing at the
+                   # basin; 2.25 gives 6'-7". See drawing A-06.
 LEDGE_SHELF = LEDGE_DX - LEDGE_H / A           # shelf depth (x) ~0.52 ft
 
 
@@ -72,15 +77,15 @@ EDGE_DIR_R = ((BW / 2 - FW / 2) / _L, D / _L)      # front -> back along right e
 NORM_R_IN = (-D / _L, -(FW / 2 - BW / 2) / _L)     # inward normal of right edge (points left & to front)
 EDGE_ANG = math.degrees(math.atan(TAPER))          # 19.65 deg
 
-GLASS_Y = 4.0        # shower screen line
+GLASS_Y = 3.7        # shower screen line (was 4.0, on a 7 ft deep floor)
 GLASS_DOOR_HW = 1.0  # half width of central glass door
 GLASS_TOP = 6.5
-SHOWER_HEAD = (0.0, 5.2, 7.0)
+SHOWER_HEAD = (0.0, 4.6, 7.0)   # was y=5.2, beyond the real back wall
 WC_Y = 2.2           # WC centre (on left ledge face)
 VAN_Y = 2.3          # vanity centre (on right ledge face)
 DOOR_HW = 1.25       # 2'-6" door
 DOOR_H = 6.667       # 6'-8"
-WIN_V = (3.1, 4.45)  # back window in-plane v range
+WIN_V = (2.6, 3.75)  # back window in-plane v range (back wall is nearer now)
 WIN_HW = 0.5
 
 FT = 0.3048
