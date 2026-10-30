@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+
+# generated drawings and renders (regenerate with the scripts in code/)
+code/out/*
+!code/out/.keep

@@ -1,0 +1,9 @@
+# drawings
+matplotlib
+numpy
+pillow
+shapely
+imageio
+# renders: Blender as a Python module (only if a wheel exists for your Python);
+# otherwise run the scripts with the Blender app, see CLAUDE.md
+# bpy==5.2.3
