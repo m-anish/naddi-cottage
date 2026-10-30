@@ -22,4 +22,9 @@ def grade(src, dst, contrast=1.06, sat=1.07, bg=None, crop=False):
         out = out.crop(box)
     out.save(dst, quality=92)
 if __name__ == "__main__":
-    grade(sys.argv[1], sys.argv[2])
+    # --cut: for renders on a transparent background (the cutaways). Composites a
+    # warm off-white behind the alpha and crops to the content, which is how the
+    # delivered cutaways have always looked.
+    cut = "--cut" in sys.argv
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    grade(args[0], args[1], bg=(242, 239, 233, 255) if cut else None, crop=cut)

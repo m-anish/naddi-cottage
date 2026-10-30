@@ -1221,9 +1221,13 @@ def render_settings(samples, w, h, exposure=0.0, look="AgX - Medium High Contras
 
 
 import os
+# The cutaway was framed on a 7 ft deep room. Aim at the middle of the real one and
+# zoom in by the same ratio, so the room keeps filling the frame.
+_CUT_K = 7.0 / D
 CUT_CAM = tuple(float(v) for v in os.environ.get("CUT_CAM", "12.8,4.6,13.6").split(","))
-CUT_TGT = tuple(float(v) for v in os.environ.get("CUT_TGT", "-1.0,3.7,2.6").split(","))
-CUT_LENS = float(os.environ.get("CUT_LENS", "22"))
+CUT_TGT = tuple(float(v) for v in os.environ.get(
+    "CUT_TGT", f"-1.0,{3.7 / 7.0 * D:.3f},2.6").split(","))
+CUT_LENS = float(os.environ.get("CUT_LENS", f"{22 * (1 + (_CUT_K - 1) * 0.75):.1f}"))
 
 
 def pass_mat(kind):
@@ -1374,6 +1378,9 @@ def line_render(out, W, H, ss=2):
             pass
 
 
+# Camera depths are written as fractions of D so they follow the room. They were set
+# when D was 7.0; the measured extension is 5.63, which put the "from the shower"
+# camera outside the back wall.
 def main():
     # works both as `python3 x.py args` and `blender -b --python x.py -- args`
     argv = sys.argv[sys.argv.index('--'):] if '--' in sys.argv else sys.argv
@@ -1391,22 +1398,24 @@ def main():
     build(P, cutaway=cut)
     exposure = 0.0
     if view in ("v1", "line_v1"):
-        camera((0.0, 0.95, 5.0), (90, 0, 0), 14.0, shift=(0, -0.17))
+        # "from the door" is an absolute spot in the door portal, not a fraction of
+        # depth; the lens widens a little because the room is shallower than it was.
+        camera((0.0, 0.95, 5.0), (90, 0, 0), 12.5, shift=(0, -0.17))
         setup_world("interior")
         window_light()
         exposure = -0.4
     elif view == "v4":
-        look_cam((1.45, 1.55, 4.8), (-1.7, 4.3, 2.4), 15.0)
+        look_cam((1.45, 1.55 / 7.0 * D, 4.8), (-1.7, 4.3 / 7.0 * D, 2.4), 15.0)
         setup_world("interior")
         window_light()
         exposure = -0.4
     elif view == "v3":
-        camera((0.0, 3.72, 4.9), (90, 0, 180), 13.0, shift=(0, -0.12))
+        camera((0.0, 3.72 / 7.0 * D, 4.9), (90, 0, 180), 12.0, shift=(0, -0.12))
         setup_world("interior")
         window_light()
         exposure = -0.4
     elif view == "v2":
-        camera((0.0, 6.35, 4.85), (90, 0, 180), 14.0, shift=(0, -0.14))
+        camera((0.0, 6.35 / 7.0 * D, 4.85), (90, 0, 180), 14.0, shift=(0, -0.14))
         setup_world("interior")
         window_light()
         exposure = -0.4
@@ -1425,9 +1434,9 @@ def main():
         structure(P)
     if view.startswith("line"):
         if view == "line_v1":
-            camera((0.0, 0.95, 5.0), (90, 0, 0), 14.0, shift=(0, -0.17))
+            camera((0.0, 0.95, 5.0), (90, 0, 0), 12.5, shift=(0, -0.17))
         elif view == "line_v2":
-            camera((0.0, 6.35, 4.85), (90, 0, 180), 14.0, shift=(0, -0.14))
+            camera((0.0, 6.35 / 7.0 * D, 4.85), (90, 0, 180), 14.0, shift=(0, -0.14))
         line_render(out, W, H)
         print("WROTE", out)
         return
