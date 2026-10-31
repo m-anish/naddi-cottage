@@ -49,7 +49,8 @@ This folder continues a claude.ai conversation (Oct 26–30, 2026). Everything d
 **Washroom** (docs/washroom_design.md, drawings A-01 to A-05, W-06, renders R1–R7)
 - Layout A: dry zone at the front (WC left, vanity right, on 2'-9" service ledges), shower at the back under the ridge, raked glass screen; vertical door portal.
 - Palettes: 1 Slate & Lime (recommended), 2 Bright & Panelised, 3 Kota & Whitewash (low cost).
-- Floor: stone plinth wall to firm ground; rubble fill; sand blinding; 200 µm polythene; 50 mm XPS + 25 mm XPS edge strip; 75–100 mm M15–M20 slab with mesh, to falls (1:80 dry, 1:50–60 shower); 2-coat polymer cement waterproofing; tile or slate in C2 adhesive.
+- Floor (revised Oct 2026, drawing W-06): stone plinth wall to firm ground; **compacted subgrade, no rubble raft**; existing HDPE + geofabric lapped up the plinth as the DPM; 50 mm sharp sand screeded level; 50 mm XPS + 25 mm XPS edge strip; 200 µm polythene slip layer over the boards; 100 mm M20 slab with mesh, to falls (1:80 dry, 1:50–60 shower); 2-coat polymer cement waterproofing; tile or slate in C2 adhesive. About 219 mm (8½") in all; losing the rubble raft drops the finished floor ~150 mm (6"), to roughly 8–10" above ground. Gravity drainage to the biodigester still has 11–21" of fall — ample.
+- Dome wall membrane: the breather membrane at layer 3 of D-01 must be **vapour-open** (spunbond PP roofing underlay). Polythene or bitumen felt there would trap damp, since there is deliberately no barrier on the room side either. Taping the EPS butt joints is the cheap alternative and does most of the work. Nothing solvent-based near the EPS — aerosol and solvent paints dissolve polystyrene.
 
 **Wastewater** (drawings S-01 to S-03)
 - Toilet only → 500 L biodigester (4 × 4 × 1.15 ft, rated for 5; inlet 8" below the upper terrace) → test chamber T → junction J → reed bed → outlet chamber → soak trench.

@@ -146,8 +146,8 @@ Build bottom-up and test the waterproofing before any finish goes on. Naddi sits
 
 1. **Close the perimeter.** Build a stone or brick plinth wall under the back and side floor beams, down to firm ground, so the fill is contained and rain and rodents stay out. Anti-termite treatment and pipe sleeves go in now.
 2. **Lay the drainage before filling.** 110 mm soil pipe from the WC; 75 mm from the dry-zone floor trap and the shower's linear drain; steady fall to the septic or sewer. Water-test every joint before burying.
-3. **Fill.** Compacted rubble in 150 mm layers, sand blinding, then a 200 µm polythene damp-proof membrane lapped up the plinth.
-4. **Insulate under the slab.** 50 mm XPS laid on the membrane, with a 25 mm XPS strip standing up around the slab edge. You get a foam-insulated floor without a hollow void under it.
+3. **Prepare the ground.** *Revised Oct 2026: no rubble raft.* The loads here are trivial and the HDPE already on the ground breaks capillary rise, so the rubble sub-base does no work worth its 6 inches of height. Ram the subgrade hard; if any of it is recent fill more than 150 mm deep, put stone back there and compact in layers. Lap the existing HDPE up the plinth — that is the damp-proof layer. Then 50 mm of sharp sand, screeded dead level (not fine river sand, which flows under the boards).
+4. **Insulate under the slab.** 50 mm XPS straight onto the sand, butt-jointed tight, with a 25 mm XPS strip standing up around the slab edge. A second 200 µm polythene goes **over** the boards as a slip layer, so wet concrete cannot run into the joints.
 5. **Slab.** 75–100 mm PCC (M15–M20) with mesh, laid to falls: about 1:80 to the floor trap in the dry zone, 1:50–1:60 to the shower drain. Keep the threshold level with the main room. Then build the two ledges (and Palette 3's partition) in 4½" brick on the slab, leaving chases for pipes and a recess for the cistern.
 6. **Walls.**
    1. Wire-brush the iron purlins and coat them with zinc-rich primer; they will be sealed in for good.
@@ -160,7 +160,7 @@ Build bottom-up and test the waterproofing before any finish goes on. Naddi sits
 10. **Electrical.** Splash-rated fittings in the shower zone, RCD protection, and a dedicated circuit for the geyser.
 11. **Hot water.** A 15 L storage geyser fits high on the inside of the front wall, above the door portal and out of the spray; a 25 L unit is tight there and may need to sit on the main-room side of the partition. If you want lower running costs, add a solar evacuated-tube heater outside with the geyser as backup; HIMURJA has run subsidies for these, so check the current scheme. Lag every exposed pipe against winter frost.
 
-The floor from steps 1–8, layer by layer. The XPS lies on the polythene, directly under the slab, with a 25 mm strip standing on edge round the slab so the concrete never touches the cold stone.
+The floor from steps 1–8, layer by layer. The XPS lies on sand over the existing HDPE, directly under the slab, with a 25 mm strip standing on edge round the slab so the concrete never touches the cold stone. Layers 3–9 come to about 219 mm (8½ in); dropping the rubble raft is what takes the finished floor down roughly 150 mm (6 in).
 
 &#91;image: Washroom floor make-up, layer by layer\]
 

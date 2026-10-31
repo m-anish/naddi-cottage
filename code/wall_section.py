@@ -40,7 +40,8 @@ fig.text(0.035, 0.915, "Drained gap behind the planks · foam over the purlins �
 fig.text(0.965, 0.955, "D-01", fontsize=15, fontweight="semibold", color=ACCENT, va="top", ha="right")
 fig.text(0.965, 0.915, "Naddi cottage · main dome", fontsize=8, color=GREY, va="top", ha="right")
 fig.add_artist(plt.Line2D([0.035, 0.965], [0.895, 0.895], color=INK, lw=0.8, transform=fig.transFigure))
-fig.text(0.035, 0.03, "Schematic, not to scale between panels; thicknesses in mm. Dimensions from site: 2×4\" struts, 1×2\" purlins, 50 mm EPS.",
+fig.text(0.035, 0.03, "Schematic, not to scale between panels; thicknesses in mm. Dimensions from site: 2×4\" struts, 1×2\" purlins, 50 mm EPS.   "
+         "Nothing solvent-based near the EPS \u2014 aerosol and solvent paints dissolve polystyrene on contact.",
          fontsize=7, color=GREY)
 
 # ------------------------------------------------------------ section at the base (mm, horizontal x2.5)
@@ -119,11 +120,11 @@ LX, RX = -770, X(x_pn1) + 100
 label(ax, (X(x_pl0 + 3), 1110), "1  Fibre-cement planks (existing),\n    painted brown outside", (LX, 1250), edge=True)
 label(ax, (X(x_pl1 + GAP / 2), 960), "2  50 mm drainage and drying gap\n    (the 1×2\" purlin depth); keep it open", (LX, 1000), color=WATER, edge=True)
 label(ax, (X(x_pl1 + 8), 690), "vertical 1×2\" steel purlin beyond;\nthe planks are screwed to it", (LX, 720), edge=True)
-label(ax, (X(x_mem1 + 25), 400), "4  50 mm FR-grade EPS on the purlins'\n    inner face, flush with the 2×4 struts", (LX, 450), edge=True)
+label(ax, (X(x_mem1 + 25), 400), "4  50 mm FR-grade EPS on the purlins'\n    inner face, flush with the 2×4 struts.\n    Tape the butt joints: that alone stops\n    air washing through, and is the cheap\n    alternative to the membrane above", (LX, 520), edge=True)
 label(ax, (X(x_gap1 - 15), -104), "close the foot of the gap from the floor\nvoid: insect mesh + a flashing sloping\nout, so water weeps over the tin", (LX, 150), color=WATER, edge=True)
 label(ax, (X(x_pl0 + 2), -400), "painted tin skirting with 25 mm\nfoam inside (existing)", (LX, -330), edge=True)
 label(ax, (X(-60), -690), "ground: HDPE + weed-control\nfabric under the tin (existing)", (LX, -560), edge=True)
-label(ax, (X(x_gap1) + 2, 1185), "3  Breather membrane (optional):\n    sheds drips, lets vapour out", (RX, 1265), color=WATER, edge=True)
+label(ax, (X(x_gap1) + 2, 1185), "3  Breather membrane (optional):\n    vapour-OPEN only \u2014 polythene or\n    felt here traps damp, and the room\n    side has no barrier to dry through", (RX + 42, 1255), color=WATER, edge=True)
 label(ax, (X(x_brd1) + 2, 1120), "6  8 mm fibre-cement board, full height;\n    limewash above the datum", (RX, 1145), edge=True)
 label(ax, (X(x_pn1 + 12), 1010), "9  Datum ledge at 3'-3\" (sill height)", (RX, 1025), edge=True)
 label(ax, (X(x_eps1 + 12.5), cz + 4), "wiring in conduit in the batten void,\nnever touching the EPS", (RX, 910), color=ACCENT, edge=True)
