@@ -9,3 +9,7 @@ __pycache__/
 # generated drawings and renders (regenerate with the scripts in code/)
 code/out/*
 !code/out/.keep
+
+# structural analysis scratch (CalculiX work files)
+structure/out/ccx/
+structure/__pycache__/
