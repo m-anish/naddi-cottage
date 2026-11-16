@@ -1,0 +1,125 @@
+pinned/stubs/bare        nodes  415 elements  469 equilibrium error 1.4e-08 N
+pinned/stubs/braced      nodes  415 elements  469 equilibrium error 1.4e-08 N
+pinned/pinned/bare       nodes  395 elements  449 equilibrium error 1.2e-08 N
+pinned/pinned/braced     nodes  395 elements  449 equilibrium error 1.2e-08 N
+rigid/stubs/bare         nodes  415 elements  469 equilibrium error 9.9e-09 N
+rigid/stubs/braced       nodes  415 elements  469 equilibrium error 9.9e-09 N
+rigid/pinned/bare        nodes  395 elements  449 equilibrium error 9.0e-09 N
+rigid/pinned/braced      nodes  395 elements  449 equilibrium error 9.0e-09 N
+
+Totals kN: {'D_steel': 11.7, 'D_roof': 8.5, 'D_wall': 13.5, 'D_lining': 15.0, 'D_floor': 11.9, 'D_floorfin': 4.5, 'L_floor': 59.4, 'D_loft': 4.3, 'L_loft': 17.2, 'L_roof': 15.0, 'S_bal': 23.0, 'S_drift198': 16.2, 'S_drift54': 16.4, 'S_drift306': 17.2}
+Wind per 1 kPa (drag, lift) kN: {18: (19.0, 26.3), 54: (12.3, 27.0), 90: (22.0, 23.6), 126: (32.2, 20.4), 162: (22.3, 23.9), 198: (13.2, 27.4), 234: (18.5, 27.3), 270: (23.9, 25.0), 306: (24.2, 24.5), 342: (25.7, 24.0)}
+
+=== k3 = 1.0  (gust 39 m/s, design pressure 0.82 kPa), ground snow 1.5 kPa ===
+ members, pinned joints, cladding bare:
+   upper ring (roof tube)      0.92  (axial 0.04 strong 0.41 weak 0.47)  N    4.6 kN  ur126_r       S: dead + live + snow
+   rafter                      0.91  (axial 0.25 strong 0.37 weak 0.28)  N   -7.5 kN  raf126_162    S: dead + live + snow
+   wall diagonal               0.76  (axial 0.34 strong 0.26 weak 0.16)  N  -10.1 kN  dg162_198_d   WS: wind from 270 + snow + live
+   upper ring (wall tube)      0.66  (axial 0.01 strong 0.35 weak 0.30)  N    1.5 kN  ur198_w       W: wind from 234, roof lift, inside -0.2
+   extension raker             0.41  (axial 0.00 strong 0.04 weak 0.36)  N    0.5 kN  wrk2          W: wind from 126, roof lift, inside -0.2
+   floor beam                  0.41  (axial 0.05 strong 0.17 weak 0.19)  N   -2.6 kN  fb20          W: wind from 270, roof press, inside +0.2
+   extension floor edge        0.26  (axial 0.01 strong 0.10 weak 0.16)  N    1.2 kN  wfo           W: wind from 126, roof press, inside +0.2
+   floor ring                  0.17  (axial 0.05 strong 0.12 weak 0.00)  N    5.6 kN  lr162         W: wind from 198, roof press, inside +0.2
+ members, pinned joints, cladding braced:
+   wall diagonal               0.65  (axial 0.02 strong 0.05 weak 0.58)  N    2.2 kN  dg90_54_u     W: wind from 126, roof press, inside -0.2
+   rafter                      0.56  (axial 0.01 strong 0.33 weak 0.21)  N    1.6 kN  raf54_90      WS: wind from 54 + snow + live
+   upper ring (roof tube)      0.49  (axial 0.04 strong 0.41 weak 0.04)  N    4.8 kN  ur126_r       S: dead + live + snow
+   upper ring (wall tube)      0.42  (axial 0.01 strong 0.35 weak 0.06)  N    1.6 kN  ur198_w       W: wind from 234, roof lift, inside -0.2
+   extension raker             0.37  (axial 0.00 strong 0.04 weak 0.32)  N    0.5 kN  wrk2          W: wind from 126, roof lift, inside -0.2
+   floor beam                  0.33  (axial 0.00 strong 0.13 weak 0.20)  N    0.0 kN  fb20          W: wind from 342, roof press, inside -0.2
+   extension floor edge        0.24  (axial 0.01 strong 0.05 weak 0.17)  N    1.2 kN  wfo           W: wind from 126, roof press, inside +0.2
+   floor ring                  0.17  (axial 0.05 strong 0.12 weak 0.00)  N    5.7 kN  lr162         W: wind from 198, roof press, inside +0.2
+ tube ends (force into hub, per tube):
+   loft centre drop              11.6 kN  (axial   11.6, shear  0.0)  drop@A  S: drifted snow, lee side 198
+   loft hanger                   10.9 kN  (axial   10.7, shear  1.8)  hg198@U198  G: dead + live
+   floor-ring hubs               10.8 kN  (axial  -10.7, shear  0.6)  dg162_198_d@L162  WS: wind from 270 + snow + live
+   upper-ring hubs               10.2 kN  (axial  -10.2, shear  0.3)  dg162_198_d@U198  WS: wind from 270 + snow + live
+   apex hub                       6.7 kN  (axial   -6.7, shear  0.7)  raf126_162@A  S: dead + live + snow
+   extension floor-corner hubs    4.3 kN  (axial   -4.2, shear  0.7)  erk2@EF2  W: wind from 342, roof press, inside -0.2
+   extension roof-corner hubs     3.4 kN  (axial   -3.4, shear  0.1)  erk1@T54  WS: wind from 126 + snow + live
+ ground screws: factored | working load (down, up, side kN):
+   L18    43.9   3.4  10.5 |  29.2   0.0   6.1
+   L90    48.0   3.5  10.4 |  32.0   0.0   6.2
+   L162   47.8   4.6  10.2 |  31.8   0.0   6.2
+   L234   47.1   4.1  10.3 |  31.4   0.0   6.1
+   L306   37.9   4.2   7.9 |  25.2   0.1   5.1
+   WF1     4.3   0.9   3.6 |   3.0   0.2   2.3
+   WF2     4.3   1.0   2.9 |   2.9   0.2   1.9
+   EF1    10.3   0.4   3.6 |   6.8   0.0   2.4
+   EF2    10.2   0.4   3.2 |   6.8   0.0   2.2
+   L0     22.2   0.0   5.4 |  14.8   0.0   3.6
+ by load family: {'G': (0.6, 0.38, 8.3), 'S': (0.92, 0.54, 10.1), 'W': (0.71, 0.65, 7.3), 'U': (0.48, 0.47, 5.0), 'WS': (0.87, 0.56, 10.6), 'E': (0.46, 0.3, 7.6)}
+
+=== k3 = 1.36  (gust 53 m/s, design pressure 1.52 kPa), ground snow 1.5 kPa ===
+ members, pinned joints, cladding bare:
+   wall diagonal               1.16  (axial 0.06 strong 0.15 weak 0.95)  N    6.5 kN  dg90_54_u     W: wind from 126, roof press, inside -0.2
+   rafter                      1.01  (axial 0.20 strong 0.49 weak 0.32)  N   -5.9 kN  raf126_90     WS: wind from 90 + snow + live
+   upper ring (roof tube)      0.92  (axial 0.04 strong 0.41 weak 0.47)  N    4.6 kN  ur126_r       S: dead + live + snow
+   upper ring (wall tube)      0.92  (axial 0.02 strong 0.58 weak 0.31)  N   -0.7 kN  ur270_w       W: wind from 306, roof press, inside -0.2
+   extension raker             0.66  (axial 0.02 strong 0.07 weak 0.58)  N    2.0 kN  wrk2          W: wind from 126, roof lift, inside -0.2
+   floor beam                  0.63  (axial 0.08 strong 0.20 weak 0.36)  N   -4.6 kN  fb20          W: wind from 270, roof press, inside +0.2
+   extension floor edge        0.43  (axial 0.02 strong 0.12 weak 0.29)  N    1.7 kN  wfo           W: wind from 126, roof press, inside +0.2
+   floor ring                  0.25  (axial 0.08 strong 0.17 weak 0.00)  N    9.4 kN  lr162         W: wind from 198, roof press, inside +0.2
+ members, pinned joints, cladding braced:
+   wall diagonal               1.16  (axial 0.06 strong 0.15 weak 0.95)  N    6.5 kN  dg90_54_u     W: wind from 126, roof press, inside -0.2
+   rafter                      0.70  (axial 0.02 strong 0.58 weak 0.11)  N    1.8 kN  raf54_90      U: light building + wind from 342 (uplift)
+   upper ring (wall tube)      0.68  (axial 0.02 strong 0.60 weak 0.06)  N    1.8 kN  ur198_w       W: wind from 234, roof lift, inside -0.2
+   upper ring (roof tube)      0.67  (axial 0.05 strong 0.58 weak 0.04)  N    5.6 kN  ur198_r       W: wind from 342, roof lift, inside +0.2
+   extension raker             0.63  (axial 0.02 strong 0.04 weak 0.56)  N    2.7 kN  erk1          W: wind from 342, roof lift, inside -0.2
+   floor beam                  0.56  (axial 0.00 strong 0.19 weak 0.37)  N    0.0 kN  fb20          W: wind from 342, roof press, inside -0.2
+   extension floor edge        0.40  (axial 0.02 strong 0.08 weak 0.31)  N    1.7 kN  wfo           W: wind from 126, roof press, inside +0.2
+   floor ring                  0.25  (axial 0.08 strong 0.17 weak 0.00)  N    9.5 kN  lr162         W: wind from 198, roof press, inside +0.2
+ tube ends (force into hub, per tube):
+   floor-ring hubs               13.1 kN  (axial  -13.1, shear  1.0)  dg234_198_d@L234  WS: wind from 126 + snow + live
+   upper-ring hubs               12.6 kN  (axial  -12.6, shear  0.6)  dg234_198_d@U198  WS: wind from 126 + snow + live
+   loft centre drop              11.6 kN  (axial   11.6, shear  0.0)  drop@A  S: drifted snow, lee side 198
+   loft hanger                   10.9 kN  (axial   10.7, shear  1.8)  hg198@U198  G: dead + live
+   extension floor-corner hubs    6.7 kN  (axial    6.6, shear  1.3)  fb18@WF1  W: wind from 126, roof press, inside +0.2
+   apex hub                       6.7 kN  (axial   -6.7, shear  0.7)  raf126_162@A  S: dead + live + snow
+   extension roof-corner hubs     5.0 kN  (axial   -4.9, shear  0.7)  erk1@T54  W: wind from 126, roof press, inside -0.2
+ ground screws: factored | working load (down, up, side kN):
+   L18    43.9  12.3  18.3 |  29.2   5.0  11.8
+   L90    48.0  12.8  18.3 |  32.0   5.2  12.1
+   L162   47.8  14.2  17.6 |  31.8   6.4  11.2
+   L234   47.1  13.2  18.0 |  31.4   5.8  11.2
+   L306   37.9  12.8  14.1 |  26.1   5.9   9.4
+   WF1     5.7   2.4   6.6 |   3.8   1.2   4.3
+   WF2     5.7   2.5   5.3 |   3.8   1.3   3.5
+   EF1    10.5   2.0   6.6 |   7.3   0.6   4.4
+   EF2    10.5   2.1   6.0 |   7.3   0.7   4.0
+   L0     22.2   0.0   9.9 |  14.8   0.0   6.6
+ by load family: {'G': (0.6, 0.38, 8.3), 'S': (0.92, 0.54, 10.1), 'W': (1.16, 1.16, 10.7), 'U': (0.92, 0.92, 9.8), 'WS': (1.01, 0.86, 12.9), 'E': (0.46, 0.3, 7.6)}
+
+Sensitivity (worst member utilisation):
+  t=1.6 fy=210: bare 1.19/1.50  braced 0.84/1.50  strut 22/46 kN  Mdy 3.02  bolts 20.4 (bolt shear)
+  t=1.6 fy=310: bare 0.95/1.11  braced 0.60/1.06  strut 21/50 kN  Mdy 4.46  bolts 20.4 (bolt shear)
+  t=2.0 fy=210: bare 0.92/1.16  braced 0.65/1.16  strut 30/63 kN  Mdy 3.73  bolts 20.4 (bolt shear)
+  t=2.0 fy=310: bare 0.71/0.84  braced 0.46/0.82  strut 29/68 kN  Mdy 5.50  bolts 20.4 (bolt shear)
+  t=2.5 fy=210: bare 0.74/0.92  braced 0.51/0.92  strut 39/83 kN  Mdy 4.58  bolts 20.4 (bolt shear)
+  t=2.5 fy=310: bare 0.54/0.65  braced 0.35/0.62  strut 39/92 kN  Mdy 6.76  bolts 20.4 (bolt shear)
+  t=3.2 fy=210: bare 0.56/0.67  braced 0.37/0.67  strut 48/104 kN  Mdy 5.71  bolts 20.4 (bolt shear)
+  t=3.2 fy=310: bare 0.41/0.50  braced 0.25/0.45  strut 50/120 kN  Mdy 8.44  bolts 20.4 (bolt shear)
+
+Limits: {
+ "bare": {
+  "snow_kPa_members": 1.6850418224930763,
+  "snow_kPa_bolts": 5.605166889727116,
+  "wind_k3_members": 1.2582961047068237,
+  "wind_k3_bolts": 1.9083438908681272,
+  "wind_ms_members": 49.07354808356612,
+  "wind_ms_bolts": 74.42541174385696
+ },
+ "braced": {
+  "snow_kPa_members": 3.473621644079685,
+  "snow_kPa_bolts": 6.464909426867962,
+  "wind_k3_members": 1.2583542300388215,
+  "wind_k3_bolts": 1.908442484773695,
+  "wind_ms_members": 49.07581497151404,
+  "wind_ms_bolts": 74.4292569061741
+ }
+}
+
+Without screws under the extension corners (sheltered wind): {'rafter': 4.32, 'upper ring (roof tube)': 0.5, 'upper ring (wall tube)': 0.43, 'wall diagonal': 0.62, 'floor ring': 0.2, 'floor beam': 3.95, 'extension floor edge': 0.22, 'extension raker': 0.4}
+max deflection under working dead+live+snow: 7.5 mm at ur198_r#0.3; apex 0.6 mm
+
+wrote /Users/anish/Documents/GitHub/naddi-cottage/structure/out/results.json

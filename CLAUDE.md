@@ -59,6 +59,24 @@ This folder continues a claude.ai conversation (Oct 26–30, 2026). Everything d
 - Reed bed: one horizontal subsurface-flow bed, 9 ft (inlet to outlet) × 6 ft, 2 ft of gravel. Levels from the lower terrace ground: walls +9", gravel +3", inlet spreader +1", water −1", outlet −8", floor −20"/−21", dig −24". 1'-6" zones of 1½–3" stone at each end; ½–¾" washed gravel between with 3" pea gravel on top; 4" perforated spreader and collector; swivel elbow in an 18 × 18" outlet chamber; stone walls + plaster + 0.5 mm HDPE liner; Phragmites 18" apart.
 - Pipes: PVC SWR Type B (~3.2 mm wall). 110 mm WC → biodigester → T → J → bed; greywater 40–50 mm branches, 75 mm main; 110 mm perforated in the bed and soak trench.
 
+**Structure** (docs/structural_assessment.md, sheet ST-01, scripts in `structure/`; 16 Nov 2026)
+- The frame is **panelised**: every triangular face is its own frame of three 2×4" tubes, so
+  every dome edge has **two tubes side by side** (one per face), joined only at the cast hubs.
+- Onshape design values: tube 2.05 × 4.00 in, **2 mm wall**; hub flanges 5 mm, ribs 10 mm;
+  five 6 mm bolts per tube end. None of these is confirmed as built.
+- Building weighs about 4.6 t today, 7 t finished. Ten ground screws: 5 floor hubs, 4
+  extension corners, 1 centre. Each ring screw: ~1.2 t everyday, up to 3.3 t code maximum.
+- On those values: fine for gravity, design snow (0.5–0.9 of the code limit) and
+  earthquake (under 0.5); design wind is 0.65–0.7 on a sheltered plot and up to 1.16 on a
+  ridge crest (first tubes reach the limit at a 177 km/h gust).
+- Weak links, in order: **ground screws sideways** (unknown type; 1'-3" stick-up),
+  **tube-to-hub bolts** (0.5–0.9), the **four tubes beside the two extension openings**
+  (side walls load them the weak way; stitch each pair together), the **loft hanging
+  points**. Hub castings are thick enough on paper; soundness needs inspecting.
+- **Not assessed**: the floor joists and the loft beams (not in any model).
+- Not a substitute for an engineer: the foundations, hub castings and loft fixings want a
+  site visit and a pull test.
+
 ## Open questions
 
 - Bukhari or other stove: where? (No timber behind it.)
@@ -68,6 +86,10 @@ This folder continues a claude.ai conversation (Oct 26–30, 2026). Everything d
 - What the east extension is for.
 - Whether to drop the toilet floor and/or move the shower inboard (see the headroom
   budget in `docs/onshape_frame_check.md`).
+- Structure, to confirm on site (table in `docs/structural_assessment.md`): tube wall
+  thickness and grade; bolt size, count and fit at the hubs; ground-screw make, size and
+  soil; hub alloy; whether both east-extension corners have screws; how exposed the plot
+  is; how the loft hangs; what the floor joists are.
 
 Answered by the Onshape export (30 Oct 2026) — **read
 `docs/onshape_frame_check.md` before touching `code/dome.py`**:
@@ -125,6 +147,11 @@ python3 code/scene.py p1 v1 code/out/wash.png 64 1200 800
 - Render settings: Cycles CPU, AgX "Medium High Contrast", 64 samples, denoised; 1200 × 800 took ~6 min on 2 cloud cores. Use EEVEE or low samples for interactive previews.
 - Drawing style: matplotlib with the Inter font (`brew install --cask font-inter`); colours ink #1d1d1b, grey #8a8780, accent #b5552b, water #3d7ea6; sheet codes in the top-right corner.
 
+The structural calculation lives apart, in `structure/` (see its README): `frame3d.py`
+(solver), `dome_model.py` (frame, loads, **assumed inputs in `INPUTS`**), `checks.py`,
+`analyse.py` → `structure/out/results.json`, `sheet_st01.py` → ST-01. The Onshape document
+ids are in `structure/README.md`; use them rather than searching again.
+
 ## Other folders
 
 - `drawings/`, `renders/`: the latest delivered sheets and renders.
@@ -152,3 +179,7 @@ last Intel build — not the 5.2.3 the scripts were written against. `bpy==4.5.1
 the matching wheel. Homebrew has no `uv` bottle for Intel any more (uv lives in
 `~/.local/bin`), and `cryptography` must be held to `<49` for an Intel wheel. The
 Blender MCP server runs from its own venv at `~/.local/share/blender-mcp-env`.
+
+`node` from Homebrew is broken on this Mac (missing `libsimdjson`), so node-based tools
+fail until it is reinstalled. FreeCAD 1.1.4 is installed; its CalculiX solver is at
+`/Applications/FreeCAD.app/Contents/Resources/bin/ccx`.

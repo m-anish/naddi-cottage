@@ -23,7 +23,7 @@ WORK = HERE / "out" / "ccx"
 
 def main():
     WORK.mkdir(parents=True, exist_ok=True)
-    f = dm.build(joints="rigid", supports="pinned", uniform=True, nseg=6)
+    f = dm.build(joints="rigid", supports="pinned", uniform=True, nseg=6, floor_tie=False)
     I = f.inputs
     # a made-up but demanding load: gravity-like, a sideways shove, and a twist
     nodal = {"A": (2e3, 0, -10e3)}

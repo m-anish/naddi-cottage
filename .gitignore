@@ -13,3 +13,4 @@ code/out/*
 # structural analysis scratch (CalculiX work files)
 structure/out/ccx/
 structure/__pycache__/
+structure/out/*.png

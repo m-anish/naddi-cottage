@@ -103,7 +103,7 @@ def chs(D, t, name):
     return Section(name, A * 1e-6, I * 1e-12, I * 1e-12, 2 * I * 1e-12, mass=A * 1e-6 * 7850)
 
 
-def build(joints="pinned", supports="stubs", tips=True, inp=None, nseg=6, uniform=False):
+def build(joints="pinned", supports="stubs", tips=True, inp=None, nseg=6, uniform=False, floor_tie=True):
     """joints: 'pinned' (tubes that stop at a hub carry no moment into it) or
     'rigid'. supports: 'stubs' (ground-screw shafts modelled as short posts
     fixed at ground level) or 'pinned' (hub held directly).
@@ -178,6 +178,15 @@ def build(joints="pinned", supports="stubs", tips=True, inp=None, nseg=6, unifor
     add("le198", ["H198", "H270"], one, up, "loft beam (assumed)", rs=False, re=False)
 
     sup = [f"L{a}" for a in LOW] + (["WF1", "WF2", "EF1", "EF2"] if tips else [])
+    if floor_tie:
+        # The floor deck and its steel tie the heads of the ground screws
+        # together in plan, and the centre screw stands under the middle of it.
+        # Modelled as five pin-ended spokes; they carry no floor weight here.
+        f.node("L0", np.zeros(3))
+        for a in LOW:
+            f.add_member(f"ft{a}", ["L0", f"L{a}"], one, up, kind="floor deck tie (assumed)", nseg=1,
+                         release_start=True, release_end=True)
+        sup.append("L0")
     for s in sup:
         if supports == "stubs":
             g = f.node("G" + s, f.xyz[f.names[s]] - np.array([0, 0, I["stub_h_ft"] * FT]))
@@ -187,6 +196,7 @@ def build(joints="pinned", supports="stubs", tips=True, inp=None, nseg=6, unifor
         else:
             f.fix(s, (0, 1, 2))
     f.assemble()
+    f.floor_tie = floor_tie
     f.support_nodes = sup
     f.supports_mode = supports
     f.inputs = I
@@ -375,7 +385,7 @@ def load_cases(f):
         # steel
         lines = []
         for m in f.members.values():
-            if m.kind == "ground screw":
+            if m.kind in ("ground screw", "floor deck tie (assumed)"):
                 continue
             q = m.sec.mass * G * I["steel_extra"] * d
             lines.append((m.name, q, q))
@@ -395,6 +405,8 @@ def load_cases(f):
             Fm = q * I["floor_area_m2"] * (1 - I["floor_to_centre"]) / 5
             for a in LOW:
                 nod[f"L{a}"] = Fm * d
+            if f.floor_tie:
+                nod["L0"] = q * I["floor_area_m2"] * I["floor_to_centre"] * d
             Fe = q * I["ext_floor_m2"]["E"] / 4
             for n in ("EF1", "EF2", "L18", "L90"):
                 nod[n] = nod.get(n, 0) + Fe * d
@@ -458,7 +470,9 @@ def load_cases(f):
             _push(f, lines, fc, 1000.0 * fc["area"] * fc["n"], nod)
     Fm = 1000.0 * I["floor_area_m2"] * (1 - I["floor_to_centre"]) / 5
     for a in LOW:
-        nod[f"L{a}"] = Fm * down
+        nod[f"L{a}"] = nod.get(f"L{a}", 0) + Fm * down
+    if f.floor_tie:
+        nod["L0"] = 1000.0 * I["floor_area_m2"] * I["floor_to_centre"] * down
     Fe = 1000.0 * I["ext_floor_m2"]["E"] / 4
     for n in ("EF1", "EF2", "L18", "L90"):
         nod[n] = nod.get(n, 0) + Fe * down

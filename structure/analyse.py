@@ -14,7 +14,7 @@ import checks as ck
 
 OUT = pathlib.Path(__file__).resolve().parent / "out"
 E_CONN = 0.053          # m: tube centre to the middle of the hub flange it bolts to
-SKIP = ("ground screw", "loft centre drop", "loft hanger", "loft beam (assumed)")
+SKIP = ("ground screw", "loft centre drop", "loft hanger", "loft beam (assumed)", "floor deck tie (assumed)")
 
 
 class Run:
@@ -59,7 +59,7 @@ class Run:
         # tube ends at hubs
         self.ends = []      # (member, node, kind, [(elem, end, sign)])
         for m in f.members.values():
-            if m.kind in ("ground screw", "loft beam (assumed)"):
+            if m.kind in ("ground screw", "loft beam (assumed)", "floor deck tie (assumed)"):
                 continue
             self.ends.append((m.name, m.nodes[0], m.kind, [(m.elems[0], 0, 1.0)]))
             self.ends.append((m.name, m.nodes[-1], m.kind, [(m.elems[-1], 1, 1.0)]))
@@ -337,6 +337,21 @@ def main():
     res["limits"] = lim
     res["bolt_group"] = dict(cap=bolt_cap, gov=ck.bolt_group()[1], parts=ck.bolt_group()[2])
     print("\nLimits:", json.dumps(clean(lim), indent=1))
+
+    # ---- what if there were no ground screws under the extension floor corners?
+    r2 = Run("pinned", "stubs", "braced", tips=False)
+    m2, e2, rc2 = envelope(r2, dm.combos(I, 1.5, 1.0), props)
+    res["no_ext_screws"] = dict(members=by_kind(m2), reactions=rc2)
+    print("\nWithout screws under the extension corners (sheltered wind):",
+          {k: round(v["util"], 2) for k, v in by_kind(m2).items()})
+
+    # ---- everyday loads on the ground screws (no wind, no snow, nobody home)
+    rb = runs["pinned/stubs/braced"]
+    Cs = dm.service_combos(I, 1.5, 1.0)
+    res["reactions_everyday"] = {k: {s: v["V"] for s, v in rb.reactions(rb.combine(Cs[k])[1]).items()}
+                                 for k in ("dead only (finished)", "dead only (today)", "dead + live + snow")}
+    stub = ck.chs_props(I["stub_D"], I["stub_t"], I["stub_fy"])
+    res["stub"] = stub
 
     # ---- deflections under working snow
     r = runs["pinned/stubs/braced"]
